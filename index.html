@@ -1,406 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>EduMorph – Morph Any Topic into Your Way of Learning</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body {
-      background: #0f172a;
-      color: #e5e7eb;
-      line-height: 1.6;
-    }
-
-    header {
-      padding: 20px 10%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 10;
-      border-bottom: 1px solid #1f2937;
-    }
-
-    .logo {
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: 0.05em;
-    }
-
-    nav a {
-      margin-left: 20px;
-      text-decoration: none;
-      color: #9ca3af;
-      font-size: 0.95rem;
-    }
-
-    nav a:hover {
-      color: #ffffff;
-    }
-
-    .btn-primary {
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      background: #22c55e;
-      color: #022c22;
-      font-size: 0.95rem;
-    }
-
-    .btn-primary:hover {
-      opacity: 0.9;
-    }
-
-    .hero {
-      padding: 60px 10% 40px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 40px;
-      align-items: center;
-    }
-
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 16px;
-    }
-
-    .hero p {
-      font-size: 1.02rem;
-      color: #cbd5f5;
-      margin-bottom: 20px;
-    }
-
-    .hero-highlight {
-      color: #22c55e;
-      font-weight: 700;
-    }
-
-    .hero-tag {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #a5b4fc;
-      margin-bottom: 8px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .hero-secondary {
-      font-size: 0.9rem;
-      color: #9ca3af;
-    }
-
-    .hero-card {
-      background: radial-gradient(circle at top left, #1d4ed8, #020617);
-      border-radius: 24px;
-      padding: 24px;
-      border: 1px solid #1f2937;
-    }
-
-    .hero-card h2 {
-      font-size: 1.1rem;
-      margin-bottom: 12px;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .pill {
-      font-size: 0.75rem;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(226, 232, 240, 0.3);
-      background: rgba(15, 23, 42, 0.6);
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      font-size: 0.8rem;
-    }
-
-    .mini-card {
-      border-radius: 12px;
-      background: rgba(15, 23, 42, 0.85);
-      padding: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    section {
-      padding: 50px 10%;
-      border-top: 1px solid #111827;
-    }
-
-    h2.section-title {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-    }
-
-    .section-subtitle {
-      color: #9ca3af;
-      font-size: 0.95rem;
-      margin-bottom: 24px;
-      max-width: 640px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .feature {
-      background: #020617;
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid #1f2937;
-      font-size: 0.9rem;
-    }
-
-    .feature h3 {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: #e5e7eb;
-    }
-
-    .muted {
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
-
-    .two-column {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
-    }
-
-    ul {
-      margin-left: 18px;
-      margin-top: 8px;
-    }
-
-    li {
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-    }
-
-    .tagline {
-      font-style: italic;
-      font-size: 0.9rem;
-      color: #a5b4fc;
-      margin-top: 6px;
-    }
-
-    footer {
-      padding: 20px 10%;
-      border-top: 1px solid #111827;
-      font-size: 0.8rem;
-      color: #6b7280;
-      text-align: center;
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .two-column {
-        grid-template-columns: 1fr;
-      }
-
-      header {
-        padding-inline: 6%;
-      }
-
-      section, .hero {
-        padding-inline: 6%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduMorph - Live Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gradient-text { background: linear-gradient(to right, #4ade80, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover:hover { transform: translateY(-2px); transition: all 0.2s ease; border-color: #3b82f6; }
+        /* Animation classes */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .loader { border-top-color: #3498db; -webkit-animation: spinner 1.5s linear infinite; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
-<body>
-  <header>
-    <div class="logo">EduMorph</div>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#how">How It Works</a>
-      <a href="#next">What's Next</a>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full glass fixed top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-bold tracking-tighter">Edu<span class="gradient-text">Morph</span></div>
+        <div class="text-xs text-slate-400 border border-slate-700 rounded-full px-3 py-1 hidden md:block">
+            Prototype v1.0 • Running in Browser Mode
+        </div>
     </nav>
-    <button class="btn-primary">Try Demo (Concept)</button>
-  </header>
 
-  <main>
-    <section class="hero" id="top">
-      <div>
-        <div class="hero-tag">From one question to many ways of learning</div>
-        <h1>Morph any topic into <span class="hero-highlight">your</span> learning style.</h1>
-        <p>
-          EduMorph turns textbook questions into simple explanations, visuals, real-life stories,
-          and exam-style practice—so every student finally gets that “Ohhh, now I get it” moment.
-        </p>
-        <div class="hero-actions">
-          <button class="btn-primary">Paste a question</button>
-          <span class="hero-secondary">No accounts, just concept demos for now.</span>
-        </div>
-      </div>
-      <div class="hero-card">
-        <h2>Example · “Work and Energy”</h2>
-        <div class="pill-row">
-          <div class="pill">Simple Explanation</div>
-          <div class="pill">Diagram View</div>
-          <div class="pill">Real-life Story</div>
-          <div class="pill">Exam Practice</div>
-        </div>
-        <div class="card-grid">
-          <div class="mini-card">
-            <strong>Explain it like I’m 12</strong>
-            <p>Work is done when a force actually moves something. Just pushing a wall does not count.</p>
-          </div>
-          <div class="mini-card">
-            <strong>Visual</strong>
-            <p>Box on a ramp → arrow for force → arrow for distance → work = force × distance.</p>
-          </div>
-          <div class="mini-card">
-            <strong>Real-life</strong>
-            <p>Climbing stairs, lifting a school bag, kicking a football – all are examples of work.</p>
-          </div>
-          <div class="mini-card">
-            <strong>Exam practice</strong>
-            <p>Question: A 20 N force moves a box 3 m. Find work done. <br>Answer: 60 J.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <main id="app" class="flex-grow pt-24 px-4 md:px-20 pb-10 flex flex-col items-center justify-center">
+        </main>
 
-    <section id="about">
-      <h2 class="section-title">Why EduMorph?</h2>
-      <p class="section-subtitle">
-        Every student learns differently, but textbooks usually explain concepts in just one way.
-        EduMorph re-shapes the same concept into multiple styles so each learner finds the version that clicks.
-      </p>
-      <div class="features-grid">
-        <div class="feature">
-          <h3>One input, many outputs</h3>
-          <p class="muted">
-            Paste a topic or question once, and get explanations, visuals, everyday examples and exam-style questions—all generated from the same input.
-          </p>
-        </div>
-        <div class="feature">
-          <h3>Aligned with classrooms</h3>
-          <p class="muted">
-            Designed around real chapters, not random trivia. Teachers can use it to create differentiated worksheets for the same lesson.
-          </p>
-        </div>
-        <div class="feature">
-          <h3>Built for confidence</h3>
-          <p class="muted">
-            Instead of just giving answers, EduMorph nudges students with hints, step-by-step breakdowns, and quick self-checks so they actually learn.
-          </p>
-        </div>
-      </div>
-    </section>
+    <script>
+        // --- STATE MANAGEMENT ---
+        const state = {
+            step: 'onboarding', // onboarding, input, loading, results
+            userClass: null,
+            userBoard: null, // CBSE, ICSE, IGCSE
+            query: '',
+            activeTab: 'simple' // simple, visual, story, exam
+        };
 
-    <section id="features">
-      <h2 class="section-title">What EduMorph does</h2>
-      <div class="two-column">
-        <div>
-          <p class="muted"><strong>For students</strong></p>
-          <ul>
-            <li>Turn scary textbook questions into friendly, simple explanations.</li>
-            <li>See the same concept as a diagram, a short story, and a real-life example.</li>
-            <li>Practice with auto-generated questions and instant answers.</li>
-            <li>Track weak topics in a personal “Revise Again” list.</li>
-          </ul>
-        </div>
-        <div>
-          <p class="muted"><strong>For teachers</strong></p>
-          <ul>
-            <li>Paste a topic and generate easy, medium, and exam-level questions.</li>
-            <li>Create worksheets for different groups of students in one click (conceptually).</li>
-            <li>Understand which formats help students most—stories, diagrams, or problems.</li>
-          </ul>
-          <p class="tagline">Same chapter. Different paths. One destination: understanding.</p>
-        </div>
-      </div>
-    </section>
+        // --- MOCKED "AI" DATABASE ---
+        // This simulates what the Backend would send back based on the syllabus.
+        const brain = {
+            "newton's second law": {
+                title: "Newton's Second Law of Motion",
+                simple: "It's basically: **Force = Mass × Acceleration**.<br><br>If you kick a football (light mass) and a bowling ball (heavy mass) with the same strength, the football goes faster. To make the heavy bowling ball move as fast as the football, you need way more kick (force).",
+                visual: "Imagine a supermarket trolley.<br><br>🛒 <strong>Empty Trolley:</strong> Easy to push (Low Mass -> High Acceleration)<br>🛒 <strong>Full Trolley:</strong> Hard to push (High Mass -> Low Acceleration)<br><br>Formula Triangle: <strong>F</strong> on top, <strong>m</strong> and <strong>a</strong> on bottom.",
+                story: "Imagine you are pushing a stalled car. If it's a tiny Nano, you and one friend can push it (Force is small, Mass is small). If it's a massive truck, you need 10 people to push it to get it moving at the same speed. The universe demands more 'payment' (Force) to move heavy things.",
+                exam_cbse: "<strong>Q: A force of 5N gives a mass m1 an acceleration of 10 m/s². What is the mass?</strong><br><br><em>Step 1:</em> F = ma<br><em>Step 2:</em> 5 = m × 10<br><em>Step 3:</em> m = 5/10 = 0.5 kg.<br><br><strong>Tip:</strong> Don't forget to write 'kg' or you lose ½ mark.",
+                exam_icse: "<strong>Q: Define Newton's Second Law and derive F=ma.</strong><br><br>Rate of change of momentum is directly proportional to applied force.<br>F ∝ dp/dt => F = k(ma). In SI units, k=1."
+            },
+            "mitochondria": {
+                title: "Mitochondria: The Cell",
+                simple: "The **Powerhouse** of the cell. It takes the food you eat and turns it into energy (ATP) that your body can actually use. Without it, you'd be like a phone with no battery.",
+                visual: "Think of a **Sausage Shape** inside a cell.<br><br>1. Outer membrane (Skin)<br>2. Inner membrane folded like a maze (Cristae)<br>3. Matrix (Liquid inside)<br><br>The folding increases surface area = More energy production!",
+                story: "Think of your city. The Nucleus is the City Hall (Boss). The Mitochondria is the **Power Plant**. Coal comes in (Food), electricity goes out (ATP). If the power plant shuts down, the city goes dark (cell death).",
+                exam_cbse: "<strong>Q: Why is mitochondria known as the powerhouse of the cell?</strong> (2 Marks)<br><br><strong>Ans:</strong> Because it performs cellular respiration to release energy in the form of ATP (Adenosine Triphosphate), which is used for various chemical activities.",
+                exam_icse: "<strong>Q: Draw a well-labelled diagram of a Mitochondrion.</strong><br><br>Focus on: Cristae (F1 particles), Matrix, and Double Membrane nature."
+            },
+            // Fallback for demo purposes
+            "default": {
+                title: "Morphed Concept",
+                simple: "This is a demo. In the real app, the AI would analyze your input and explain it simply here.",
+                visual: "The AI would generate a text-based description of a diagram or a flow chart here.",
+                story: "The AI would generate a relatable metaphor (like cricket, cooking, or gaming) to explain this topic.",
+                exam_cbse: "The AI would generate NCERT-style questions based on Class 9 previous papers.",
+                exam_icse: "The AI would generate ICSE-style rigorous definitions and derivations."
+            }
+        };
 
-    <section id="how">
-      <h2 class="section-title">How it works (concept build)</h2>
-      <p class="section-subtitle">
-        EduMorph combines a simple web interface with an AI-powered backend that reshapes content based on each learner’s needs.
-      </p>
-      <div class="two-column">
-        <div>
-          <h3>Under the hood</h3>
-          <ul>
-            <li>Frontend: HTML, CSS, and JavaScript single-page app.</li>
-            <li>Backend: Node.js / Flask APIs like <code>/explain</code>, <code>/practice</code>, and <code>/quiz</code>.</li>
-            <li>AI layer: Uses LLMs to generate explanations, stories, diagrams (as text), and questions.</li>
-            <li>Database: Stores user history, weak topics, and preferred learning styles.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Student journey</h3>
-          <ul>
-            <li>Paste or upload a question on EduMorph.</li>
-            <li>Select a mode: “Explain”, “Story”, “Visual”, or “Exam”.</li>
-            <li>Explore the morphed views and try practice questions.</li>
-            <li>Take a quick quiz and see if you’re exam-ready.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+        // --- DOM ELEMENTS CONTAINER ---
+        const app = document.getElementById('app');
 
-    <section id="next">
-      <h2 class="section-title">What’s next for EduMorph</h2>
-      <div class="two-column">
-        <div>
-          <ul>
-            <li>Build learning profiles that auto-prioritise the format each student responds to best.</li>
-            <li>Launch teacher dashboards for class-wise insights and printable worksheets.</li>
-            <li>Add multi-language support for explanations while keeping exam terms in English.</li>
-          </ul>
-        </div>
-        <div>
-          <ul>
-            <li>Create a mobile app where students can just click a picture of a question.</li>
-            <li>Pilot EduMorph with schools and ATL labs to refine it with real classroom feedback.</li>
-            <li>Integrate with existing LMS platforms to fit into school workflows smoothly.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  </main>
+        // --- RENDER FUNCTIONS ---
 
-  <footer>
-    EduMorph · Morphing education into every learner’s language.
-  </footer>
+        function renderOnboarding() {
+            app.innerHTML = `
+                <div class="fade-in max-w-2xl w-full text-center">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6">Let's set up your <br><span class="gradient-text">Learning Profile</span></h1>
+                    <p class="text-slate-400 mb-10 text-lg">To give you the best explanations, EduMorph needs to know your syllabus.</p>
+                    
+                    <div class="glass p-8 rounded-2xl text-left border-t-4 border-green-400">
+                        <label class="block text-sm font-bold text-slate-300 mb-2">WHICH CLASS ARE YOU IN?</label>
+                        <div class="flex gap-4 mb-6">
+                            <button onclick="selectClass(9)" id="btn-c9" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">Class 9</button>
+                            <button onclick="selectClass(10)" id="btn-c10" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">Class 10</button>
+                        </div>
+
+                        <label class="block text-sm font-bold text-slate-300 mb-2">WHICH BOARD?</label>
+                        <div class="grid grid-cols-3 gap-4 mb-8">
+                            <button onclick="selectBoard('CBSE')" id="btn-cbse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">CBSE / NCERT</button>
+                            <button onclick="selectBoard('ICSE')" id="btn-icse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">ICSE</button>
+                            <button onclick="selectBoard('IGCSE')" id="btn-igcse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">IGCSE</button>
+                        </div>
+
+                        <button onclick="goToInput()" id="btn-next" class="w-full py-4 bg-green-500 hover:bg-green-600 text-black font-extrabold rounded-xl text-lg transition opacity-50 cursor-not-allowed" disabled>
+                            Start Learning &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderInput() {
+            const placeholder = state.userBoard === 'CBSE' ? 'e.g., Force, Tissues, Polynomials...' : 'e.g., Mole Concept, Civics...';
+            
+            app.innerHTML = `
+                <div class="fade-in max-w-3xl w-full text-center">
+                    <div class="inline-block px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-green-400 mb-6">
+                        ACTIVE: CLASS ${state.userClass} • ${state.userBoard}
+                    </div>
+                    <h2 class="text-3xl font-bold mb-8">What are you stuck on?</h2>
+                    
+                    <div class="relative w-full">
+                        <input type="text" id="queryInput" placeholder="${placeholder}" 
+                            class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 text-xl focus:outline-none focus:border-green-500 transition shadow-2xl"
+                            onkeypress="handleEnter(event)">
+                        <button onclick="processQuery()" class="absolute right-3 top-3 bottom-3 bg-blue-600 hover:bg-blue-500 px-8 rounded-xl font-bold transition">
+                            Morph It
+                        </button>
+                    </div>
+
+                    <div class="mt-8 flex justify-center gap-4 text-sm text-slate-500">
+                        <span>Try typing:</span>
+                        <span onclick="fillInput('Newton\'s Second Law')" class="cursor-pointer text-blue-400 hover:underline">Newton's Second Law</span>
+                        <span onclick="fillInput('Mitochondria')" class="cursor-pointer text-blue-400 hover:underline">Mitochondria</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLoading() {
+            app.innerHTML = `
+                <div class="fade-in text-center">
+                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-6 mx-auto"></div>
+                    <h2 class="text-2xl font-bold mb-2">Morphing Concept...</h2>
+                    <p class="text-slate-400" id="loading-text">Analyzing syllabus for ${state.userBoard} Class ${state.userClass}...</p>
+                </div>
+            `;
+            
+            // Simulate steps
+            setTimeout(() => { document.getElementById('loading-text').innerText = "Simplifying language..."; }, 800);
+            setTimeout(() => { document.getElementById('loading-text').innerText = "Generating visual analogies..."; }, 1600);
+            setTimeout(() => { document.getElementById('loading-text').innerText = "Scanning past year papers..."; }, 2400);
+            setTimeout(() => { renderResults(); }, 3200);
+        }
+
+        function renderResults() {
+            // Find data in mock DB or use default
+            const key = state.query.toLowerCase();
+            let data = brain["default"];
+            
+            // Simple keyword matching
+            if (key.includes("newton") || key.includes("force")) data = brain["newton's second law"];
+            else if (key.includes("mitochondria") || key.includes("cell")) data = brain["mitochondria"];
+            
+            // Adjust exam content based on board
+            let examContent = state.userBoard === 'ICSE' ? (data.exam_icse || data.exam_cbse) : data.exam_cbse;
+
+            app.innerHTML = `
+                <div class="fade-in w-full max-w-5xl">
+                    <button onclick="goToInput()" class="mb-6 text-slate-400 hover:text-white text-sm">&larr; Ask another question</button>
+                    
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="w-full md:w-1/3">
+                            <div class="glass p-6 rounded-2xl sticky top-24">
+                                <div class="text-green-400 font-mono text-xs uppercase tracking-widest mb-2">${state.userBoard} • Class ${state.userClass}</div>
+                                <h1 class="text-3xl font-bold mb-4 leading-tight">${data.title}</h1>
+                                <div class="h-1 w-20 bg-blue-500 rounded-full mb-6"></div>
+                                <p class="text-slate-400 text-sm mb-6">This topic appears frequently in exams. Focus on the formula and definitions.</p>
+                                
+                                <div class="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                                    <div class="text-xs text-slate-500 uppercase mb-2">Confidence Level</div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-yellow-500 h-full w-[20%]"></div>
+                                        </div>
+                                        <span class="text-xs font-bold text-yellow-500">20%</span>
+                                    </div>
+                                    <div class="text-xs text-slate-400">Read the cards to boost score.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-2/3">
+                            <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
+                                <button onclick="switchTab('simple', this)" class="tab-btn active px-4 py-2 bg-blue-600 rounded-full text-sm font-bold whitespace-nowrap">Explain Simply</button>
+                                <button onclick="switchTab('visual', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Visual Mode</button>
+                                <button onclick="switchTab('story', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Real Life Story</button>
+                                <button onclick="switchTab('exam', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Exam Prep</button>
+                            </div>
+
+                            <div class="glass p-6 md:p-8 rounded-2xl min-h-[300px] relative border-t-4 border-blue-500">
+                                <div id="tab-content" class="text-lg leading-relaxed text-slate-200">
+                                    ${data.simple}
+                                </div>
+                            </div>
+
+                            <div class="mt-6 grid grid-cols-2 gap-4">
+                                <button class="p-4 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 font-bold flex items-center justify-center gap-2">
+                                    <span>📥</span> Download Worksheet
+                                </button>
+                                <button class="p-4 rounded-xl bg-green-600 hover:bg-green-500 text-black font-bold flex items-center justify-center gap-2">
+                                    <span>⚡</span> Take 2-min Quiz
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Save data for tab switching
+            state.currentData = data;
+        }
+
+        // --- INTERACTION LOGIC ---
+
+        function selectClass(c) {
+            state.userClass = c;
+            document.getElementById('btn-c9').classList.replace('bg-green-500', 'bg-slate-800');
+            document.getElementById('btn-c9').classList.remove('text-black');
+            document.getElementById('btn-c10').classList.replace('bg-green-500', 'bg-slate-800');
+            document.getElementById('btn-c10').classList.remove('text-black');
+            
+            const btn = document.getElementById(`btn-c${c}`);
+            btn.classList.remove('bg-slate-800');
+            btn.classList.add('bg-green-500', 'text-black');
+            checkNext();
+        }
+
+        function selectBoard(b) {
+            state.userBoard = b;
+            ['cbse', 'icse', 'igcse'].forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-slate-800');
+            });
+            const btn = document.getElementById(`btn-${b.toLowerCase()}`);
+            btn.classList.remove('bg-slate-800');
+            btn.classList.add('bg-blue-500', 'text-white');
+            checkNext();
+        }
+
+        function checkNext() {
+            if(state.userClass && state.userBoard) {
+                const btn = document.getElementById('btn-next');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function goToInput() {
+            state.step = 'input';
+            renderInput();
+        }
+
+        function fillInput(text) {
+            document.getElementById('queryInput').value = text;
+        }
+
+        function handleEnter(e) {
+            if(e.key === 'Enter') processQuery();
+        }
+
+        function processQuery() {
+            const val = document.getElementById('queryInput').value;
+            if(!val) return;
+            state.query = val;
+            state.step = 'loading';
+            renderLoading();
+        }
+
+        function switchTab(tabName, btnElement) {
+            // Reset buttons
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('bg-blue-600');
+                b.classList.add('bg-slate-800', 'border', 'border-slate-700');
+            });
+            // Highlight active
+            btnElement.classList.remove('bg-slate-800', 'border', 'border-slate-700');
+            btnElement.classList.add('bg-blue-600');
+
+            // Change Content
+            const contentDiv = document.getElementById('tab-content');
+            let content = "";
+            let data = state.currentData;
+
+            // Fade out effect
+            contentDiv.style.opacity = 0;
+            setTimeout(() => {
+                if(tabName === 'simple') content = data.simple;
+                if(tabName === 'visual') content = data.visual;
+                if(tabName === 'story') content = data.story;
+                if(tabName === 'exam') content = state.userBoard === 'ICSE' ? (data.exam_icse || data.exam_cbse) : data.exam_cbse;
+                
+                contentDiv.innerHTML = content;
+                contentDiv.style.opacity = 1;
+            }, 200);
+        }
+
+        // Init
+        renderOnboarding();
+
+    </script>
 </body>
 </html>
