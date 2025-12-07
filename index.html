@@ -3,99 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduMorph - Live Prototype</title>
+    <title>EduMorph v2.0 - Fully Functional</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
+        body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        
+        /* Glassmorphism */
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-solid { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.05); }
+        
         .gradient-text { background: linear-gradient(to right, #4ade80, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-hover:hover { transform: translateY(-2px); transition: all 0.2s ease; border-color: #3b82f6; }
-        /* Animation classes */
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .loader { border-top-color: #3498db; -webkit-animation: spinner 1.5s linear infinite; animation: spinner 1.5s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        .slide-up { animation: slideUp 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Mermaid Styling Overrides */
+        .mermaid { background: transparent; display: flex; justify-content: center; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col overflow-x-hidden">
 
-    <nav class="w-full glass fixed top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="text-2xl font-bold tracking-tighter">Edu<span class="gradient-text">Morph</span></div>
-        <div class="text-xs text-slate-400 border border-slate-700 rounded-full px-3 py-1 hidden md:block">
-            Prototype v1.0 • Running in Browser Mode
+    <nav class="w-full glass fixed top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-slate-700">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="resetApp()">
+            <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-600 rounded-lg flex items-center justify-center font-bold text-black">E</div>
+            <div class="text-xl font-bold tracking-tight">Edu<span class="gradient-text">Morph</span></div>
         </div>
+        <div id="user-badge" class="hidden text-xs font-mono text-green-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+            </div>
     </nav>
 
-    <main id="app" class="flex-grow pt-24 px-4 md:px-20 pb-10 flex flex-col items-center justify-center">
+    <main id="app" class="flex-grow pt-24 px-4 md:px-12 pb-10 flex flex-col items-center w-full max-w-7xl mx-auto">
         </main>
 
-    <script>
-        // --- STATE MANAGEMENT ---
-        const state = {
-            step: 'onboarding', // onboarding, input, loading, results
-            userClass: null,
-            userBoard: null, // CBSE, ICSE, IGCSE
-            query: '',
-            activeTab: 'simple' // simple, visual, story, exam
-        };
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white text-slate-900 w-full max-w-2xl rounded-2xl p-8 slide-up relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 font-bold text-xl">&times;</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
 
-        // --- MOCKED "AI" DATABASE ---
-        // This simulates what the Backend would send back based on the syllabus.
-        const brain = {
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+
+        // --- DATABASE (The Brain) ---
+        const knowledgeBase = {
             "newton's second law": {
-                title: "Newton's Second Law of Motion",
-                simple: "It's basically: **Force = Mass × Acceleration**.<br><br>If you kick a football (light mass) and a bowling ball (heavy mass) with the same strength, the football goes faster. To make the heavy bowling ball move as fast as the football, you need way more kick (force).",
-                visual: "Imagine a supermarket trolley.<br><br>🛒 <strong>Empty Trolley:</strong> Easy to push (Low Mass -> High Acceleration)<br>🛒 <strong>Full Trolley:</strong> Hard to push (High Mass -> Low Acceleration)<br><br>Formula Triangle: <strong>F</strong> on top, <strong>m</strong> and <strong>a</strong> on bottom.",
-                story: "Imagine you are pushing a stalled car. If it's a tiny Nano, you and one friend can push it (Force is small, Mass is small). If it's a massive truck, you need 10 people to push it to get it moving at the same speed. The universe demands more 'payment' (Force) to move heavy things.",
-                exam_cbse: "<strong>Q: A force of 5N gives a mass m1 an acceleration of 10 m/s². What is the mass?</strong><br><br><em>Step 1:</em> F = ma<br><em>Step 2:</em> 5 = m × 10<br><em>Step 3:</em> m = 5/10 = 0.5 kg.<br><br><strong>Tip:</strong> Don't forget to write 'kg' or you lose ½ mark.",
-                exam_icse: "<strong>Q: Define Newton's Second Law and derive F=ma.</strong><br><br>Rate of change of momentum is directly proportional to applied force.<br>F ∝ dp/dt => F = k(ma). In SI units, k=1."
+                title: "Newton's Second Law",
+                tags: ["Physics", "Force", "Motion"],
+                simple: `
+                    <h3 class="text-2xl font-bold mb-4 text-green-400">The "Push" Rule</h3>
+                    <p class="mb-4 text-lg">Think of it simply: <strong>Force = Mass × Acceleration (F=ma)</strong>.</p>
+                    <p class="mb-4">It connects three things:</p>
+                    <ul class="list-disc pl-6 space-y-2 mb-6 text-slate-300">
+                        <li><strong>Mass (m):</strong> How heavy the object is.</li>
+                        <li><strong>Force (F):</strong> How hard you push it.</li>
+                        <li><strong>Acceleration (a):</strong> How fast it speeds up.</li>
+                    </ul>
+                    <div class="bg-slate-800 p-4 rounded-xl border-l-4 border-blue-500">
+                        <strong>Analogy:</strong> Pushing a shopping cart. <br>
+                        - Empty cart (low mass) = Easy to speed up (high acceleration).<br>
+                        - Full cart (high mass) = Hard to push (needs more Force).
+                    </div>
+                `,
+                // Mermaid Diagram Syntax
+                visual: `
+                    graph TD
+                    A[Start: You want to move an object] -->|Apply| B(Force F)
+                    B -->|Acts on| C{Mass m}
+                    C -->|Result| D[Acceleration a]
+                    D -->|Formula| E[F = m * a]
+                    
+                    style A fill:#1e293b,stroke:#3b82f6,stroke-width:2px
+                    style B fill:#1e293b,stroke:#4ade80,stroke-width:2px
+                    style E fill:#3b82f6,stroke:#fff,stroke-width:2px,color:#fff
+                `,
+                story: `
+                    <h3 class="text-xl font-bold mb-3 text-yellow-400">The Broken Car Dilemma</h3>
+                    <p class="mb-4">Imagine your dad's car breaks down in the middle of the road. It's a huge SUV (High Mass).</p>
+                    <p class="mb-4">You try to push it alone. You are applying <strong>Force</strong>, but because the <strong>Mass</strong> is huge, the <strong>Acceleration</strong> is almost zero. The car barely moves.</p>
+                    <p class="mb-4">Now, imagine 5 rugby players come to help. The total <strong>Force</strong> increases massively. Suddenly, the car starts moving faster (High Acceleration).</p>
+                    <p class="italic text-slate-400">"The heavier the object, the harder you have to kick it to make it move." - That is Newton's Second Law.</p>
+                `,
+                exam: {
+                    cbse: `
+                        <div class="space-y-6">
+                            <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                                <span class="text-xs font-mono text-green-400">2 MARKS • NUMERICAL</span>
+                                <p class="font-bold mt-1">Q: A force of 10N acts on a body of mass 2kg. Calculate the acceleration.</p>
+                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans1">
+                                    <span class="text-blue-400 font-bold">Solution:</span><br>
+                                    Given: F = 10N, m = 2kg<br>
+                                    Formula: F = ma → a = F/m<br>
+                                    Calculation: a = 10/2 = <strong>5 m/s²</strong>
+                                </div>
+                                <button onclick="toggleAns('ans1')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
+                            </div>
+                             <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                                <span class="text-xs font-mono text-green-400">3 MARKS • REASONING</span>
+                                <p class="font-bold mt-1">Q: Why does a cricketer pull his hands back while catching a fast ball?</p>
+                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans2">
+                                    <span class="text-blue-400 font-bold">Solution:</span><br>
+                                    To increase the time (t) of impact. <br>
+                                    Since Force is proportional to change in momentum / time (F ∝ Δp/t), increasing time <strong>reduces the force</strong> exerted on the hands, preventing injury.
+                                </div>
+                                <button onclick="toggleAns('ans2')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
+                            </div>
+                        </div>
+                    `
+                },
+                quiz: [
+                    { q: "What is the formula for Newton's Second Law?", options: ["F = m/a", "F = ma", "F = m + a", "F = a/m"], correct: 1 },
+                    { q: "If Mass increases and Force stays the same, Acceleration...", options: ["Increases", "Decreases", "Stays same", "Becomes zero"], correct: 1 },
+                    { q: "SI Unit of Force is:", options: ["Joule", "Watt", "Newton", "Pascal"], correct: 2 }
+                ]
             },
-            "mitochondria": {
-                title: "Mitochondria: The Cell",
-                simple: "The **Powerhouse** of the cell. It takes the food you eat and turns it into energy (ATP) that your body can actually use. Without it, you'd be like a phone with no battery.",
-                visual: "Think of a **Sausage Shape** inside a cell.<br><br>1. Outer membrane (Skin)<br>2. Inner membrane folded like a maze (Cristae)<br>3. Matrix (Liquid inside)<br><br>The folding increases surface area = More energy production!",
-                story: "Think of your city. The Nucleus is the City Hall (Boss). The Mitochondria is the **Power Plant**. Coal comes in (Food), electricity goes out (ATP). If the power plant shuts down, the city goes dark (cell death).",
-                exam_cbse: "<strong>Q: Why is mitochondria known as the powerhouse of the cell?</strong> (2 Marks)<br><br><strong>Ans:</strong> Because it performs cellular respiration to release energy in the form of ATP (Adenosine Triphosphate), which is used for various chemical activities.",
-                exam_icse: "<strong>Q: Draw a well-labelled diagram of a Mitochondrion.</strong><br><br>Focus on: Cristae (F1 particles), Matrix, and Double Membrane nature."
-            },
-            // Fallback for demo purposes
-            "default": {
-                title: "Morphed Concept",
-                simple: "This is a demo. In the real app, the AI would analyze your input and explain it simply here.",
-                visual: "The AI would generate a text-based description of a diagram or a flow chart here.",
-                story: "The AI would generate a relatable metaphor (like cricket, cooking, or gaming) to explain this topic.",
-                exam_cbse: "The AI would generate NCERT-style questions based on Class 9 previous papers.",
-                exam_icse: "The AI would generate ICSE-style rigorous definitions and derivations."
+            "photosynthesis": {
+                title: "Photosynthesis",
+                tags: ["Biology", "Plants", "Energy"],
+                simple: `
+                    <h3 class="text-2xl font-bold mb-4 text-green-400">Plant Cooking 101</h3>
+                    <p class="mb-4 text-lg">Photosynthesis is just how plants cook their own food using sunlight.</p>
+                    <ul class="list-disc pl-6 space-y-2 mb-6 text-slate-300">
+                        <li><strong>Ingredients:</strong> Water (from roots) + CO2 (from air).</li>
+                        <li><strong>Fuel:</strong> Sunlight.</li>
+                        <li><strong>Kitchen:</strong> Chloroplasts (green stuff in leaves).</li>
+                        <li><strong>Result:</strong> Glucose (Sugar/Food) + Oxygen (fresh air).</li>
+                    </ul>
+                `,
+                visual: `
+                    graph LR
+                    Sun((Sunlight)) -->|Energy| Leaf[Green Leaf]
+                    Air(CO2) -->|Enters Stomata| Leaf
+                    Water(H2O) -->|Roots to Xylem| Leaf
+                    Leaf -->|Produces| Sugar[Glucose/Food]
+                    Leaf -->|Releases| Oxygen(O2)
+                    
+                    style Sun fill:#facc15,stroke:#fff,stroke-width:2px,color:#000
+                    style Leaf fill:#166534,stroke:#4ade80,stroke-width:2px
+                    style Oxygen fill:#3b82f6,stroke:#fff
+                `,
+                story: `
+                    <h3 class="text-xl font-bold mb-3 text-yellow-400">The Solar Panel Factory</h3>
+                    <p class="mb-4">Think of a leaf as a factory covered in solar panels (Chlorophyll). The factory needs raw materials: Water (delivered by pipes/roots) and Carbon Dioxide (delivered by air).</p>
+                    <p class="mb-4">When the sun hits the panels, the machines turn on. They smash the water and air together to create boxes of Sugar (Energy) to ship to the rest of the plant.</p>
+                    <p class="italic text-slate-400">The 'exhaust' smoke from this factory isn't pollution—it's pure Oxygen, which we breathe!</p>
+                `,
+                exam: {
+                    cbse: `
+                         <div class="space-y-6">
+                            <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
+                                <span class="text-xs font-mono text-green-400">1 MARK • DEFINITION</span>
+                                <p class="font-bold mt-1">Q: Write the chemical equation for photosynthesis.</p>
+                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans3">
+                                    <span class="text-blue-400 font-bold">Solution:</span><br>
+                                    6CO₂ + 6H₂O —(Sunlight/Chlorophyll)→ C₆H₁₂O₆ + 6O₂
+                                </div>
+                                <button onclick="toggleAns('ans3')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
+                            </div>
+                        </div>
+                    `
+                },
+                quiz: [
+                    { q: "Which gas is used BY the plant during photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: 2 },
+                    { q: "Where does photosynthesis mainly occur?", options: ["Roots", "Stem", "Chloroplasts", "Flowers"], correct: 2 },
+                    { q: "What is the primary product created?", options: ["Glucose", "Starch", "Protein", "Fat"], correct: 0 }
+                ]
             }
         };
 
-        // --- DOM ELEMENTS CONTAINER ---
-        const app = document.getElementById('app');
+        // --- STATE ---
+        let state = {
+            step: 'onboarding', 
+            class: null,
+            board: null,
+            currentTopicKey: null,
+            quizScore: 0,
+            quizIndex: 0
+        };
 
-        // --- RENDER FUNCTIONS ---
+        // --- NAVIGATION & RENDERERS ---
 
+        function init() {
+            renderOnboarding();
+        }
+
+        function resetApp() {
+            state.step = 'onboarding';
+            state.class = null;
+            state.board = null;
+            state.currentTopicKey = null;
+            document.getElementById('user-badge').classList.add('hidden');
+            renderOnboarding();
+        }
+
+        // 1. ONBOARDING VIEW
         function renderOnboarding() {
+            const app = document.getElementById('app');
             app.innerHTML = `
-                <div class="fade-in max-w-2xl w-full text-center">
-                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6">Let's set up your <br><span class="gradient-text">Learning Profile</span></h1>
-                    <p class="text-slate-400 mb-10 text-lg">To give you the best explanations, EduMorph needs to know your syllabus.</p>
+                <div class="fade-in max-w-2xl w-full text-center mt-10">
+                    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Learn <span class="gradient-text">Your</span> Way.</h1>
+                    <p class="text-slate-400 mb-10 text-xl">EduMorph adapts explanations, visuals, and quizzes to your syllabus.</p>
                     
-                    <div class="glass p-8 rounded-2xl text-left border-t-4 border-green-400">
-                        <label class="block text-sm font-bold text-slate-300 mb-2">WHICH CLASS ARE YOU IN?</label>
-                        <div class="flex gap-4 mb-6">
-                            <button onclick="selectClass(9)" id="btn-c9" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">Class 9</button>
-                            <button onclick="selectClass(10)" id="btn-c10" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">Class 10</button>
+                    <div class="glass p-8 rounded-3xl text-left border-t border-slate-600 shadow-2xl">
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Select Class</label>
+                            <div class="flex gap-4">
+                                <button onclick="selectClass(9)" id="btn-c9" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition text-lg">Class 9</button>
+                                <button onclick="selectClass(10)" id="btn-c10" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition text-lg">Class 10</button>
+                            </div>
                         </div>
 
-                        <label class="block text-sm font-bold text-slate-300 mb-2">WHICH BOARD?</label>
-                        <div class="grid grid-cols-3 gap-4 mb-8">
-                            <button onclick="selectBoard('CBSE')" id="btn-cbse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">CBSE / NCERT</button>
-                            <button onclick="selectBoard('ICSE')" id="btn-icse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">ICSE</button>
-                            <button onclick="selectBoard('IGCSE')" id="btn-igcse" class="py-3 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 font-bold transition">IGCSE</button>
+                        <div class="mb-8">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Select Board</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button onclick="selectBoard('CBSE')" id="btn-cbse" class="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition">CBSE</button>
+                                <button onclick="selectBoard('ICSE')" id="btn-icse" class="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition">ICSE</button>
+                            </div>
                         </div>
 
-                        <button onclick="goToInput()" id="btn-next" class="w-full py-4 bg-green-500 hover:bg-green-600 text-black font-extrabold rounded-xl text-lg transition opacity-50 cursor-not-allowed" disabled>
+                        <button onclick="goToSearch()" id="btn-start" class="w-full py-4 bg-gradient-to-r from-green-500 to-blue-600 hover:opacity-90 text-white font-extrabold rounded-xl text-lg transition opacity-50 cursor-not-allowed shadow-lg shadow-blue-500/20" disabled>
                             Start Learning &rarr;
                         </button>
                     </div>
@@ -103,205 +243,326 @@
             `;
         }
 
-        function renderInput() {
-            const placeholder = state.userBoard === 'CBSE' ? 'e.g., Force, Tissues, Polynomials...' : 'e.g., Mole Concept, Civics...';
-            
-            app.innerHTML = `
-                <div class="fade-in max-w-3xl w-full text-center">
-                    <div class="inline-block px-4 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-green-400 mb-6">
-                        ACTIVE: CLASS ${state.userClass} • ${state.userBoard}
-                    </div>
-                    <h2 class="text-3xl font-bold mb-8">What are you stuck on?</h2>
-                    
-                    <div class="relative w-full">
-                        <input type="text" id="queryInput" placeholder="${placeholder}" 
-                            class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 text-xl focus:outline-none focus:border-green-500 transition shadow-2xl"
-                            onkeypress="handleEnter(event)">
-                        <button onclick="processQuery()" class="absolute right-3 top-3 bottom-3 bg-blue-600 hover:bg-blue-500 px-8 rounded-xl font-bold transition">
-                            Morph It
-                        </button>
-                    </div>
-
-                    <div class="mt-8 flex justify-center gap-4 text-sm text-slate-500">
-                        <span>Try typing:</span>
-                        <span onclick="fillInput('Newton\'s Second Law')" class="cursor-pointer text-blue-400 hover:underline">Newton's Second Law</span>
-                        <span onclick="fillInput('Mitochondria')" class="cursor-pointer text-blue-400 hover:underline">Mitochondria</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderLoading() {
-            app.innerHTML = `
-                <div class="fade-in text-center">
-                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-6 mx-auto"></div>
-                    <h2 class="text-2xl font-bold mb-2">Morphing Concept...</h2>
-                    <p class="text-slate-400" id="loading-text">Analyzing syllabus for ${state.userBoard} Class ${state.userClass}...</p>
-                </div>
-            `;
-            
-            // Simulate steps
-            setTimeout(() => { document.getElementById('loading-text').innerText = "Simplifying language..."; }, 800);
-            setTimeout(() => { document.getElementById('loading-text').innerText = "Generating visual analogies..."; }, 1600);
-            setTimeout(() => { document.getElementById('loading-text').innerText = "Scanning past year papers..."; }, 2400);
-            setTimeout(() => { renderResults(); }, 3200);
-        }
-
-        function renderResults() {
-            // Find data in mock DB or use default
-            const key = state.query.toLowerCase();
-            let data = brain["default"];
-            
-            // Simple keyword matching
-            if (key.includes("newton") || key.includes("force")) data = brain["newton's second law"];
-            else if (key.includes("mitochondria") || key.includes("cell")) data = brain["mitochondria"];
-            
-            // Adjust exam content based on board
-            let examContent = state.userBoard === 'ICSE' ? (data.exam_icse || data.exam_cbse) : data.exam_cbse;
-
-            app.innerHTML = `
-                <div class="fade-in w-full max-w-5xl">
-                    <button onclick="goToInput()" class="mb-6 text-slate-400 hover:text-white text-sm">&larr; Ask another question</button>
-                    
-                    <div class="flex flex-col md:flex-row gap-6 items-start">
-                        <div class="w-full md:w-1/3">
-                            <div class="glass p-6 rounded-2xl sticky top-24">
-                                <div class="text-green-400 font-mono text-xs uppercase tracking-widest mb-2">${state.userBoard} • Class ${state.userClass}</div>
-                                <h1 class="text-3xl font-bold mb-4 leading-tight">${data.title}</h1>
-                                <div class="h-1 w-20 bg-blue-500 rounded-full mb-6"></div>
-                                <p class="text-slate-400 text-sm mb-6">This topic appears frequently in exams. Focus on the formula and definitions.</p>
-                                
-                                <div class="bg-slate-900 rounded-xl p-4 border border-slate-700">
-                                    <div class="text-xs text-slate-500 uppercase mb-2">Confidence Level</div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
-                                            <div class="bg-yellow-500 h-full w-[20%]"></div>
-                                        </div>
-                                        <span class="text-xs font-bold text-yellow-500">20%</span>
-                                    </div>
-                                    <div class="text-xs text-slate-400">Read the cards to boost score.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full md:w-2/3">
-                            <div class="flex gap-2 overflow-x-auto pb-2 mb-4">
-                                <button onclick="switchTab('simple', this)" class="tab-btn active px-4 py-2 bg-blue-600 rounded-full text-sm font-bold whitespace-nowrap">Explain Simply</button>
-                                <button onclick="switchTab('visual', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Visual Mode</button>
-                                <button onclick="switchTab('story', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Real Life Story</button>
-                                <button onclick="switchTab('exam', this)" class="tab-btn px-4 py-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-full text-sm font-bold whitespace-nowrap">Exam Prep</button>
-                            </div>
-
-                            <div class="glass p-6 md:p-8 rounded-2xl min-h-[300px] relative border-t-4 border-blue-500">
-                                <div id="tab-content" class="text-lg leading-relaxed text-slate-200">
-                                    ${data.simple}
-                                </div>
-                            </div>
-
-                            <div class="mt-6 grid grid-cols-2 gap-4">
-                                <button class="p-4 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 font-bold flex items-center justify-center gap-2">
-                                    <span>📥</span> Download Worksheet
-                                </button>
-                                <button class="p-4 rounded-xl bg-green-600 hover:bg-green-500 text-black font-bold flex items-center justify-center gap-2">
-                                    <span>⚡</span> Take 2-min Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Save data for tab switching
-            state.currentData = data;
-        }
-
-        // --- INTERACTION LOGIC ---
-
+        // Logic Helpers
         function selectClass(c) {
-            state.userClass = c;
-            document.getElementById('btn-c9').classList.replace('bg-green-500', 'bg-slate-800');
-            document.getElementById('btn-c9').classList.remove('text-black');
-            document.getElementById('btn-c10').classList.replace('bg-green-500', 'bg-slate-800');
-            document.getElementById('btn-c10').classList.remove('text-black');
-            
-            const btn = document.getElementById(`btn-c${c}`);
-            btn.classList.remove('bg-slate-800');
-            btn.classList.add('bg-green-500', 'text-black');
-            checkNext();
+            state.class = c;
+            updateSelectionUI('btn-c', c, [9, 10]);
+            checkReady();
         }
-
         function selectBoard(b) {
-            state.userBoard = b;
-            ['cbse', 'icse', 'igcse'].forEach(id => {
-                const btn = document.getElementById(`btn-${id}`);
-                btn.classList.remove('bg-blue-500', 'text-white');
-                btn.classList.add('bg-slate-800');
-            });
-            const btn = document.getElementById(`btn-${b.toLowerCase()}`);
-            btn.classList.remove('bg-slate-800');
-            btn.classList.add('bg-blue-500', 'text-white');
-            checkNext();
+            state.board = b;
+            updateSelectionUI('btn-', b.toLowerCase(), ['cbse', 'icse']);
+            checkReady();
         }
-
-        function checkNext() {
-            if(state.userClass && state.userBoard) {
-                const btn = document.getElementById('btn-next');
+        function updateSelectionUI(prefix, selected, options) {
+            options.forEach(opt => {
+                const el = document.getElementById(prefix + opt);
+                if (el) {
+                    el.classList.remove('bg-blue-600', 'text-white', 'border-blue-400');
+                    el.classList.add('bg-slate-800', 'border-slate-600');
+                }
+            });
+            const active = document.getElementById(prefix + selected);
+            active.classList.remove('bg-slate-800', 'border-slate-600');
+            active.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
+        }
+        function checkReady() {
+            if(state.class && state.board) {
+                const btn = document.getElementById('btn-start');
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         }
 
-        function goToInput() {
-            state.step = 'input';
-            renderInput();
+        // 2. SEARCH VIEW
+        function goToSearch() {
+            // Update Badge
+            const badge = document.getElementById('user-badge');
+            badge.innerText = `${state.board} • Class ${state.class}`;
+            badge.classList.remove('hidden');
+
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="fade-in max-w-3xl w-full text-center mt-12">
+                    <h2 class="text-3xl font-bold mb-8">What are you stuck on today?</h2>
+                    
+                    <div class="relative w-full group">
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                        <div class="relative bg-slate-900 rounded-2xl p-2 flex items-center border border-slate-700">
+                            <input type="text" id="searchInput" placeholder="Try 'Newton's Laws' or 'Photosynthesis'..." 
+                                class="w-full bg-transparent p-4 text-xl focus:outline-none text-white placeholder-slate-500"
+                                onkeypress="if(event.key === 'Enter') processSearch()">
+                            <button onclick="processSearch()" class="bg-blue-600 hover:bg-blue-500 px-8 py-3 rounded-xl font-bold transition mr-1">
+                                Morph
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        <p class="text-sm text-slate-500 mb-4 uppercase tracking-wider font-bold">Trending Topics</p>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <span onclick="autoSearch('newton')" class="cursor-pointer px-4 py-2 rounded-full bg-slate-800 border border-slate-700 hover:border-blue-500 hover:text-blue-400 transition">🍎 Newton's Second Law</span>
+                            <span onclick="autoSearch('photosynthesis')" class="cursor-pointer px-4 py-2 rounded-full bg-slate-800 border border-slate-700 hover:border-green-500 hover:text-green-400 transition">🌿 Photosynthesis</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function fillInput(text) {
-            document.getElementById('queryInput').value = text;
+        function autoSearch(term) {
+            document.getElementById('searchInput').value = term;
+            processSearch();
         }
 
-        function handleEnter(e) {
-            if(e.key === 'Enter') processQuery();
+        function processSearch() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const app = document.getElementById('app');
+
+            // Loading State
+            app.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-64 fade-in">
+                    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-slate-400 animate-pulse">Scanning ${state.board} Syllabus...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                if(term.includes('newton')) state.currentTopicKey = "newton's second law";
+                else if(term.includes('photo')) state.currentTopicKey = "photosynthesis";
+                else state.currentTopicKey = "newton's second law"; // Fallback for demo
+                
+                renderTopicDashboard();
+            }, 1500);
         }
 
-        function processQuery() {
-            const val = document.getElementById('queryInput').value;
-            if(!val) return;
-            state.query = val;
-            state.step = 'loading';
-            renderLoading();
+        // 3. TOPIC DASHBOARD
+        function renderTopicDashboard(activeTab = 'simple') {
+            const data = knowledgeBase[state.currentTopicKey];
+            const app = document.getElementById('app');
+
+            app.innerHTML = `
+                <div class="fade-in w-full">
+                    <button onclick="goToSearch()" class="mb-4 text-slate-400 hover:text-white text-sm flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Back to Search
+                    </button>
+                    
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="w-full lg:w-1/4 space-y-4">
+                            <div class="glass-solid p-6 rounded-2xl border-l-4 border-green-500">
+                                <h1 class="text-2xl font-bold leading-tight">${data.title}</h1>
+                                <div class="flex gap-2 mt-3 flex-wrap">
+                                    ${data.tags.map(t => `<span class="px-2 py-1 bg-slate-700 rounded text-xs text-slate-300">${t}</span>`).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="glass-solid p-6 rounded-2xl">
+                                <div class="text-xs font-bold text-slate-400 uppercase mb-4">Actions</div>
+                                <button onclick="openWorksheetModal()" class="w-full py-3 mb-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                                    📄 Worksheet
+                                </button>
+                                <button onclick="startQuiz()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/50 transition">
+                                    ⚡ Take Quiz
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-3/4">
+                            <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+                                <button onclick="switchTab('simple')" id="tab-simple" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Simple</button>
+                                <button onclick="switchTab('visual')" id="tab-visual" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Visual</button>
+                                <button onclick="switchTab('story')" id="tab-story" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Story</button>
+                                <button onclick="switchTab('exam')" id="tab-exam" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Exam</button>
+                            </div>
+
+                            <div id="content-area" class="glass p-8 rounded-3xl min-h-[400px]">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            switchTab(activeTab);
         }
 
-        function switchTab(tabName, btnElement) {
-            // Reset buttons
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('bg-blue-600');
-                b.classList.add('bg-slate-800', 'border', 'border-slate-700');
+        function switchTab(tabName) {
+            // UI Updates
+            ['simple', 'visual', 'story', 'exam'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if(t === tabName) {
+                    btn.className = "px-5 py-2 rounded-full text-sm font-bold bg-blue-600 text-white shadow-lg shadow-blue-500/30 transform scale-105 transition";
+                } else {
+                    btn.className = "px-5 py-2 rounded-full text-sm font-bold bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition";
+                }
             });
-            // Highlight active
-            btnElement.classList.remove('bg-slate-800', 'border', 'border-slate-700');
-            btnElement.classList.add('bg-blue-600');
 
-            // Change Content
-            const contentDiv = document.getElementById('tab-content');
-            let content = "";
-            let data = state.currentData;
+            const contentDiv = document.getElementById('content-area');
+            const data = knowledgeBase[state.currentTopicKey];
 
-            // Fade out effect
+            // Render Content
             contentDiv.style.opacity = 0;
             setTimeout(() => {
-                if(tabName === 'simple') content = data.simple;
-                if(tabName === 'visual') content = data.visual;
-                if(tabName === 'story') content = data.story;
-                if(tabName === 'exam') content = state.userBoard === 'ICSE' ? (data.exam_icse || data.exam_cbse) : data.exam_cbse;
-                
-                contentDiv.innerHTML = content;
+                if(tabName === 'visual') {
+                    contentDiv.innerHTML = `<div class="mermaid">${data.visual}</div>`;
+                    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                } else if (tabName === 'exam') {
+                    contentDiv.innerHTML = data.exam.cbse; // simplified for demo
+                } else {
+                    contentDiv.innerHTML = data[tabName];
+                }
                 contentDiv.style.opacity = 1;
-            }, 200);
+                contentDiv.className = "glass p-8 rounded-3xl min-h-[400px] fade-in";
+            }, 150);
+        }
+
+        function toggleAns(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        }
+
+        // 4. QUIZ SYSTEM (Fully Functional)
+        function startQuiz() {
+            state.quizScore = 0;
+            state.quizIndex = 0;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const data = knowledgeBase[state.currentTopicKey];
+            const qData = data.quiz[state.quizIndex];
+            const app = document.getElementById('app');
+
+            app.innerHTML = `
+                <div class="fade-in max-w-2xl w-full mt-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Quiz Time</h2>
+                        <span class="text-slate-400 text-sm">Question ${state.quizIndex + 1} of ${data.quiz.length}</span>
+                    </div>
+
+                    <div class="glass p-8 rounded-2xl relative overflow-hidden">
+                        <div class="h-1 bg-slate-700 absolute top-0 left-0 w-full">
+                            <div class="h-full bg-blue-500 transition-all duration-300" style="width: ${((state.quizIndex + 1) / data.quiz.length) * 100}%"></div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-6 mt-2">${qData.q}</h3>
+                        
+                        <div class="space-y-3" id="options-container">
+                            ${qData.options.map((opt, idx) => `
+                                <button onclick="checkAnswer(${idx})" class="option-btn w-full text-left p-4 rounded-xl bg-slate-800 border border-slate-700 hover:border-blue-500 transition flex justify-between items-center group">
+                                    <span>${opt}</span>
+                                    <span class="w-4 h-4 rounded-full border border-slate-500 group-hover:border-blue-500"></span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                     <button onclick="renderTopicDashboard()" class="mt-6 text-slate-500 hover:text-white underline text-sm">Cancel Quiz</button>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selectedIndex) {
+            const data = knowledgeBase[state.currentTopicKey];
+            const qData = data.quiz[state.quizIndex];
+            const correctIndex = qData.correct;
+            const buttons = document.querySelectorAll('.option-btn');
+
+            // Disable all buttons
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Logic styling
+            if(selectedIndex === correctIndex) {
+                state.quizScore++;
+                buttons[selectedIndex].classList.remove('bg-slate-800', 'border-slate-700');
+                buttons[selectedIndex].classList.add('bg-green-900', 'border-green-500', 'text-green-100');
+                buttons[selectedIndex].innerHTML += ` ✅`;
+            } else {
+                buttons[selectedIndex].classList.remove('bg-slate-800', 'border-slate-700');
+                buttons[selectedIndex].classList.add('bg-red-900', 'border-red-500', 'text-red-100');
+                buttons[correctIndex].classList.remove('bg-slate-800', 'border-slate-700');
+                buttons[correctIndex].classList.add('bg-green-900', 'border-green-500'); // Show correct one
+            }
+
+            // Next Question Delay
+            setTimeout(() => {
+                state.quizIndex++;
+                if(state.quizIndex < data.quiz.length) {
+                    renderQuizQuestion();
+                } else {
+                    renderQuizResult(data.quiz.length);
+                }
+            }, 1500);
+        }
+
+        function renderQuizResult(total) {
+            const percentage = (state.quizScore / total) * 100;
+            let message = "";
+            let action = "";
+            
+            if(percentage === 100) { message = "Perfect Score! 🌟"; action = "You are exam ready."; }
+            else if(percentage > 50) { message = "Good Job! 👍"; action = "Review the weak spots."; }
+            else { message = "Needs Revision 📚"; action = "Go back to the 'Simple' tab."; }
+
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="fade-in max-w-lg w-full text-center mt-12">
+                    <div class="glass p-10 rounded-3xl border-t border-blue-500 shadow-2xl">
+                        <div class="text-6xl mb-4">${percentage === 100 ? '🏆' : '📊'}</div>
+                        <h2 class="text-3xl font-bold mb-2">Quiz Complete</h2>
+                        <p class="text-slate-400 mb-6">${action}</p>
+                        
+                        <div class="text-5xl font-black gradient-text mb-8">${state.quizScore} / ${total}</div>
+                        
+                        <button onclick="renderTopicDashboard()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-white transition">
+                            Back to Topic
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 5. WORKSHEET MODAL
+        function openWorksheetModal() {
+            const data = knowledgeBase[state.currentTopicKey];
+            const modal = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="text-center border-b pb-4 mb-4 border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-900">EduMorph Worksheet</h2>
+                    <p class="text-sm text-slate-500 uppercase">Class ${state.class} • ${state.board} • ${data.title}</p>
+                </div>
+                <div class="space-y-6 text-slate-800">
+                    <div>
+                        <h3 class="font-bold border-b border-slate-300 mb-2">Part A: Define</h3>
+                        <p class="h-20 border border-dashed border-slate-300 rounded bg-slate-50 p-2 text-sm text-slate-400">Student writes here...</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold border-b border-slate-300 mb-2">Part B: Draw Diagram</h3>
+                        <div class="h-32 border border-slate-300 rounded flex items-center justify-center bg-slate-50">
+                            <span class="text-slate-400 text-sm italic">Draw the ${data.title} diagram here</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold border-b border-slate-300 mb-2">Part C: Solve</h3>
+                        <p class="text-sm mb-2">1. ${data.quiz[1].q}</p>
+                        <p class="h-16 border border-dashed border-slate-300 rounded bg-slate-50"></p>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-2 rounded-lg hover:bg-slate-800 transition">Print PDF</button>
+                    <button onclick="closeModal()" class="flex-1 border border-slate-300 py-2 rounded-lg hover:bg-slate-100 transition">Close</button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
         }
 
         // Init
-        renderOnboarding();
+        init();
 
     </script>
 </body>
