@@ -3,35 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduMorph v2.0 - Fully Functional</title>
+    <title>EduMorph v2.4 - Adaptive Learning Modes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        
         body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        
-        /* Glassmorphism */
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .glass-solid { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.05); }
-        
         .gradient-text { background: linear-gradient(to right, #4ade80, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* Animations */
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        .slide-up { animation: slideUp 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* Mermaid Styling Overrides */
-        .mermaid { background: transparent; display: flex; justify-content: center; }
+        .mermaid { display: flex; justify-content: center; background: transparent; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden">
@@ -41,529 +25,255 @@
             <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-600 rounded-lg flex items-center justify-center font-bold text-black">E</div>
             <div class="text-xl font-bold tracking-tight">Edu<span class="gradient-text">Morph</span></div>
         </div>
-        <div id="user-badge" class="hidden text-xs font-mono text-green-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
-            </div>
+        <div id="user-badge" class="hidden text-xs font-mono text-green-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700"></div>
     </nav>
 
     <main id="app" class="flex-grow pt-24 px-4 md:px-12 pb-10 flex flex-col items-center w-full max-w-7xl mx-auto">
         </main>
 
     <div id="modal-overlay" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white text-slate-900 w-full max-w-2xl rounded-2xl p-8 slide-up relative">
+        <div class="bg-white text-slate-900 w-full max-w-2xl rounded-2xl p-8 relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 font-bold text-xl">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
 
     <script>
-        // Initialize Mermaid
         mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
 
-        // --- DATABASE (The Brain) ---
+        // --- CORE KNOWLEDGE BASE (6 Concepts) ---
         const knowledgeBase = {
-            "newton's second law": {
-                title: "Newton's Second Law",
-                tags: ["Physics", "Force", "Motion"],
-                simple: `
-                    <h3 class="text-2xl font-bold mb-4 text-green-400">The "Push" Rule</h3>
-                    <p class="mb-4 text-lg">Think of it simply: <strong>Force = Mass × Acceleration (F=ma)</strong>.</p>
-                    <p class="mb-4">It connects three things:</p>
-                    <ul class="list-disc pl-6 space-y-2 mb-6 text-slate-300">
-                        <li><strong>Mass (m):</strong> How heavy the object is.</li>
-                        <li><strong>Force (F):</strong> How hard you push it.</li>
-                        <li><strong>Acceleration (a):</strong> How fast it speeds up.</li>
-                    </ul>
-                    <div class="bg-slate-800 p-4 rounded-xl border-l-4 border-blue-500">
-                        <strong>Analogy:</strong> Pushing a shopping cart. <br>
-                        - Empty cart (low mass) = Easy to speed up (high acceleration).<br>
-                        - Full cart (high mass) = Hard to push (needs more Force).
-                    </div>
-                `,
-                // Mermaid Diagram Syntax
-                visual: `
-                    graph TD
-                    A[Start: You want to move an object] -->|Apply| B(Force F)
-                    B -->|Acts on| C{Mass m}
-                    C -->|Result| D[Acceleration a]
-                    D -->|Formula| E[F = m * a]
-                    
-                    style A fill:#1e293b,stroke:#3b82f6,stroke-width:2px
-                    style B fill:#1e293b,stroke:#4ade80,stroke-width:2px
-                    style E fill:#3b82f6,stroke:#fff,stroke-width:2px,color:#fff
-                `,
-                story: `
-                    <h3 class="text-xl font-bold mb-3 text-yellow-400">The Broken Car Dilemma</h3>
-                    <p class="mb-4">Imagine your dad's car breaks down in the middle of the road. It's a huge SUV (High Mass).</p>
-                    <p class="mb-4">You try to push it alone. You are applying <strong>Force</strong>, but because the <strong>Mass</strong> is huge, the <strong>Acceleration</strong> is almost zero. The car barely moves.</p>
-                    <p class="mb-4">Now, imagine 5 rugby players come to help. The total <strong>Force</strong> increases massively. Suddenly, the car starts moving faster (High Acceleration).</p>
-                    <p class="italic text-slate-400">"The heavier the object, the harder you have to kick it to make it move." - That is Newton's Second Law.</p>
-                `,
-                exam: {
-                    cbse: `
-                        <div class="space-y-6">
-                            <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
-                                <span class="text-xs font-mono text-green-400">2 MARKS • NUMERICAL</span>
-                                <p class="font-bold mt-1">Q: A force of 10N acts on a body of mass 2kg. Calculate the acceleration.</p>
-                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans1">
-                                    <span class="text-blue-400 font-bold">Solution:</span><br>
-                                    Given: F = 10N, m = 2kg<br>
-                                    Formula: F = ma → a = F/m<br>
-                                    Calculation: a = 10/2 = <strong>5 m/s²</strong>
-                                </div>
-                                <button onclick="toggleAns('ans1')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
-                            </div>
-                             <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
-                                <span class="text-xs font-mono text-green-400">3 MARKS • REASONING</span>
-                                <p class="font-bold mt-1">Q: Why does a cricketer pull his hands back while catching a fast ball?</p>
-                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans2">
-                                    <span class="text-blue-400 font-bold">Solution:</span><br>
-                                    To increase the time (t) of impact. <br>
-                                    Since Force is proportional to change in momentum / time (F ∝ Δp/t), increasing time <strong>reduces the force</strong> exerted on the hands, preventing injury.
-                                </div>
-                                <button onclick="toggleAns('ans2')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
-                            </div>
-                        </div>
-                    `
-                },
-                quiz: [
-                    { q: "What is the formula for Newton's Second Law?", options: ["F = m/a", "F = ma", "F = m + a", "F = a/m"], correct: 1 },
-                    { q: "If Mass increases and Force stays the same, Acceleration...", options: ["Increases", "Decreases", "Stays same", "Becomes zero"], correct: 1 },
-                    { q: "SI Unit of Force is:", options: ["Joule", "Watt", "Newton", "Pascal"], correct: 2 }
-                ]
+            "polynomials": {
+                title: "Polynomials (Math)", tags: ["Maths", "Algebra"], 
+                simple: "Polynomials are expressions where powers of variables are non-negative integers. **Degree** is the highest power. The key identity is the Remainder Theorem.",
+                visual: "graph TD\nA[Polynomials] --> B{By Terms}\nB --> B1[Monomial: 5x]\nB --> B2[Binomial: x+2]\nA --> C{By Degree}\nC --> C1[Linear: 2x+1]\nC --> C2[Quadratic: x^2+3]",
+                story: "Polynomials are like multi-part recipes. Each term is an ingredient, and the highest power is the most expensive ingredient.",
+                exam: { cbse: "<div>Q: Factorise: x² + 5x + 6 using splitting the middle term (3 Marks).</div>" },
+                quiz: [{ q: "What is the degree of 4x³?", options: ["2", "3", "4", "1"], correct: 1 }]
             },
-            "photosynthesis": {
-                title: "Photosynthesis",
-                tags: ["Biology", "Plants", "Energy"],
-                simple: `
-                    <h3 class="text-2xl font-bold mb-4 text-green-400">Plant Cooking 101</h3>
-                    <p class="mb-4 text-lg">Photosynthesis is just how plants cook their own food using sunlight.</p>
-                    <ul class="list-disc pl-6 space-y-2 mb-6 text-slate-300">
-                        <li><strong>Ingredients:</strong> Water (from roots) + CO2 (from air).</li>
-                        <li><strong>Fuel:</strong> Sunlight.</li>
-                        <li><strong>Kitchen:</strong> Chloroplasts (green stuff in leaves).</li>
-                        <li><strong>Result:</strong> Glucose (Sugar/Food) + Oxygen (fresh air).</li>
-                    </ul>
-                `,
-                visual: `
-                    graph LR
-                    Sun((Sunlight)) -->|Energy| Leaf[Green Leaf]
-                    Air(CO2) -->|Enters Stomata| Leaf
-                    Water(H2O) -->|Roots to Xylem| Leaf
-                    Leaf -->|Produces| Sugar[Glucose/Food]
-                    Leaf -->|Releases| Oxygen(O2)
-                    
-                    style Sun fill:#facc15,stroke:#fff,stroke-width:2px,color:#000
-                    style Leaf fill:#166534,stroke:#4ade80,stroke-width:2px
-                    style Oxygen fill:#3b82f6,stroke:#fff
-                `,
-                story: `
-                    <h3 class="text-xl font-bold mb-3 text-yellow-400">The Solar Panel Factory</h3>
-                    <p class="mb-4">Think of a leaf as a factory covered in solar panels (Chlorophyll). The factory needs raw materials: Water (delivered by pipes/roots) and Carbon Dioxide (delivered by air).</p>
-                    <p class="mb-4">When the sun hits the panels, the machines turn on. They smash the water and air together to create boxes of Sugar (Energy) to ship to the rest of the plant.</p>
-                    <p class="italic text-slate-400">The 'exhaust' smoke from this factory isn't pollution—it's pure Oxygen, which we breathe!</p>
-                `,
-                exam: {
-                    cbse: `
-                         <div class="space-y-6">
-                            <div class="p-4 bg-slate-800 rounded-lg border border-slate-700">
-                                <span class="text-xs font-mono text-green-400">1 MARK • DEFINITION</span>
-                                <p class="font-bold mt-1">Q: Write the chemical equation for photosynthesis.</p>
-                                <div class="mt-3 text-slate-300 text-sm hidden" id="ans3">
-                                    <span class="text-blue-400 font-bold">Solution:</span><br>
-                                    6CO₂ + 6H₂O —(Sunlight/Chlorophyll)→ C₆H₁₂O₆ + 6O₂
-                                </div>
-                                <button onclick="toggleAns('ans3')" class="mt-3 text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded">Show Answer</button>
-                            </div>
-                        </div>
-                    `
-                },
-                quiz: [
-                    { q: "Which gas is used BY the plant during photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: 2 },
-                    { q: "Where does photosynthesis mainly occur?", options: ["Roots", "Stem", "Chloroplasts", "Flowers"], correct: 2 },
-                    { q: "What is the primary product created?", options: ["Glucose", "Starch", "Protein", "Fat"], correct: 0 }
-                ]
+            "triangles": {
+                title: "Triangles (Math)", tags: ["Maths", "Geometry"],
+                simple: "A 3-sided polygon. Sum of angles = 180°. **Congruence Rules** (SSS, SAS, ASA, RHS) prove identical shape/size.",
+                visual: "graph TD\nA[Triangles] --> B{Congruence Rules}\nB --> B1(SSS)\nB --> B2(SAS)\nB --> B3(ASA)",
+                story: "Triangles are the strongest shape in construction, like the frame of a bridge, because they cannot be deformed by force.",
+                exam: { cbse: "<div>Q: Prove that angles opposite to equal sides of an isosceles triangle are equal. (4 Marks)</div>" },
+                quiz: [{ q: "What is the SSS rule for?", options: ["Similarity", "Area", "Perimeter", "Congruence"], correct: 3 }]
+            },
+            "newton's second law": {
+                title: "Newton's Second Law (Physics)", tags: ["Physics", "Force", "Motion"],
+                simple: "The rate of change of momentum is proportional to the net external force. Formula: **F = ma**.",
+                visual: "graph LR\nForce(F) -->|Acts on| Mass(m)\nMass -->|Creates| Accel(a)",
+                story: "Pushing a stalled car (high mass) requires more force than pushing a bicycle (low mass) to get the same acceleration.",
+                exam: { cbse: "<div>Q: Why does a cricketer pull his hands back while catching a fast ball? (2 Marks)</div>" },
+                quiz: [{ q: "F = ?", options: ["ma", "m/a", "m+a", "a/m"], correct: 0 }]
+            },
+             "tissues": {
+                title: "Tissues (Biology)", tags: ["Biology", "Cells"],
+                simple: "A group of similar cells performing a specific function. Plant tissues are supportive (like Meristematic), animal tissues are complex (like Muscular, Nervous).",
+                visual: "graph TD\nA[Tissues] --> B(Plant Tissues)\nB --> B1[Meristematic]\nA --> C(Animal Tissues)\nC --> C1[Epithelial]\nC --> C2[Muscular]",
+                story: "Tissues are specialized worker teams in a factory. The Muscular team are the movers, the Epithelial team are the security guards (covering surfaces).",
+                exam: { cbse: "<div>Q: Differentiate between parenchyma, collenchyma, and sclerenchyma tissues. (3 Marks)</div>" },
+                quiz: [{ q: "Which tissue is responsible for movement in animals?", options: ["Nervous", "Epithelial", "Muscular", "Connective"], correct: 2 }]
+            },
+            "french revolution": {
+                title: "The French Revolution (History)", tags: ["History", "Civics"],
+                simple: "A period (1789-1799) of radical change driven by **social inequality** (Third Estate) and **economic crisis** (high taxes).",
+                visual: "graph TD\nSocial Inequality --> High Taxes\nHigh Taxes --> Debt Crisis\nDebt Crisis --> Storming of Bastille",
+                story: "Imagine a school where 97% of students pay all the lunch money while the 3% elite eat free. The 97% eventually rebelled.",
+                exam: { cbse: "<div>Q: List any three causes of the empty treasury of France under Louis XVI. (3 Marks)</div>" },
+                quiz: [{ q: "When was the Bastille prison stormed?", options: ["1776", "1789", "1804", "1815"], correct: 1 }]
+            },
+             "nationalism in india": {
+                title: "Nationalism in India (History)", tags: ["History", "Freedom Struggle"],
+                simple: "The movement for independence from British rule. Key phases include Non-Cooperation and Civil Disobedience under Gandhi's leadership.",
+                visual: "graph TD\nWorld War I --> Economic Hardship\nEconomic Hardship --> Rowlatt Act\nRowlatt Act --> Jallianwala Bagh\nJallianwala Bagh --> Non-Cooperation Movement",
+                story: "Imagine a playground where one group (British) makes all the rules. Nationalism is when the other children realize their collective strength to win back the playground.",
+                exam: { cbse: "<div>Q: Why did the Non-Cooperation Movement gradually slow down in cities? (3 Marks)</div>" },
+                quiz: [{ q: "Which event forced Gandhi to call off the Non-Cooperation Movement?", options: ["Salt March", "Chauri Chaura Incident", "Dandi March", "Round Table Conference"], correct: 1 }]
             }
         };
 
-        // --- STATE ---
-        let state = {
+        // --- STATE & INITIALIZATION ---
+        let state = { 
             step: 'onboarding', 
-            class: null,
-            board: null,
-            currentTopicKey: null,
-            quizScore: 0,
-            quizIndex: 0
+            class: null, 
+            board: null, 
+            currentTopicKey: null, 
+            quizScore: 0, 
+            quizIndex: 0,
+            learningMode: 'learning' // Default mode
         };
-
-        // --- NAVIGATION & RENDERERS ---
-
-        function init() {
-            renderOnboarding();
+        
+        function init() { renderOnboarding(); }
+        function resetApp() { state = { step: 'onboarding', class: null, board: null, currentTopicKey: null, learningMode: 'learning' }; init(); }
+        function selectClass(c) { state.class = c; updateUI('btn-c', c, [9,10]); checkReady(); }
+        function selectBoard(b) { state.board = b; updateUI('btn-', b.toLowerCase(), ['cbse','icse']); checkReady(); }
+        function updateUI(prefix, sel, opts) {
+            opts.forEach(o => document.getElementById(prefix+o).className = "flex-1 py-3 bg-slate-800 rounded-xl border border-slate-600 text-slate-400");
+            document.getElementById(prefix+sel).className = "flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg";
         }
-
-        function resetApp() {
-            state.step = 'onboarding';
-            state.class = null;
-            state.board = null;
-            state.currentTopicKey = null;
-            document.getElementById('user-badge').classList.add('hidden');
-            renderOnboarding();
+        function checkReady() { if(state.class && state.board) document.getElementById('btn-start').disabled = false; document.getElementById('btn-start').classList.remove('opacity-50'); }
+        function toggleAns(id) { document.getElementById(id).classList.toggle('hidden'); }
+        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+        function runSearch(term) { document.getElementById('searchInput').value = term; search(); }
+        function setMode(mode) {
+            state.learningMode = mode;
+            renderTopicSelection(); // Move to the next step
         }
+        
+        // --- CORE SEARCH LOGIC: Updated to include 6 concepts ---
 
-        // 1. ONBOARDING VIEW
-        function renderOnboarding() {
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="fade-in max-w-2xl w-full text-center mt-10">
-                    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Learn <span class="gradient-text">Your</span> Way.</h1>
-                    <p class="text-slate-400 mb-10 text-xl">EduMorph adapts explanations, visuals, and quizzes to your syllabus.</p>
-                    
-                    <div class="glass p-8 rounded-3xl text-left border-t border-slate-600 shadow-2xl">
-                        <div class="mb-6">
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Select Class</label>
-                            <div class="flex gap-4">
-                                <button onclick="selectClass(9)" id="btn-c9" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition text-lg">Class 9</button>
-                                <button onclick="selectClass(10)" id="btn-c10" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition text-lg">Class 10</button>
-                            </div>
-                        </div>
-
-                        <div class="mb-8">
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Select Board</label>
-                            <div class="grid grid-cols-2 gap-4">
-                                <button onclick="selectBoard('CBSE')" id="btn-cbse" class="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition">CBSE</button>
-                                <button onclick="selectBoard('ICSE')" id="btn-icse" class="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-600 font-bold transition">ICSE</button>
-                            </div>
-                        </div>
-
-                        <button onclick="goToSearch()" id="btn-start" class="w-full py-4 bg-gradient-to-r from-green-500 to-blue-600 hover:opacity-90 text-white font-extrabold rounded-xl text-lg transition opacity-50 cursor-not-allowed shadow-lg shadow-blue-500/20" disabled>
-                            Start Learning &rarr;
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Logic Helpers
-        function selectClass(c) {
-            state.class = c;
-            updateSelectionUI('btn-c', c, [9, 10]);
-            checkReady();
-        }
-        function selectBoard(b) {
-            state.board = b;
-            updateSelectionUI('btn-', b.toLowerCase(), ['cbse', 'icse']);
-            checkReady();
-        }
-        function updateSelectionUI(prefix, selected, options) {
-            options.forEach(opt => {
-                const el = document.getElementById(prefix + opt);
-                if (el) {
-                    el.classList.remove('bg-blue-600', 'text-white', 'border-blue-400');
-                    el.classList.add('bg-slate-800', 'border-slate-600');
-                }
-            });
-            const active = document.getElementById(prefix + selected);
-            active.classList.remove('bg-slate-800', 'border-slate-600');
-            active.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
-        }
-        function checkReady() {
-            if(state.class && state.board) {
-                const btn = document.getElementById('btn-start');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        // 2. SEARCH VIEW
-        function goToSearch() {
-            // Update Badge
-            const badge = document.getElementById('user-badge');
-            badge.innerText = `${state.board} • Class ${state.class}`;
-            badge.classList.remove('hidden');
-
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="fade-in max-w-3xl w-full text-center mt-12">
-                    <h2 class="text-3xl font-bold mb-8">What are you stuck on today?</h2>
-                    
-                    <div class="relative w-full group">
-                        <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                        <div class="relative bg-slate-900 rounded-2xl p-2 flex items-center border border-slate-700">
-                            <input type="text" id="searchInput" placeholder="Try 'Newton's Laws' or 'Photosynthesis'..." 
-                                class="w-full bg-transparent p-4 text-xl focus:outline-none text-white placeholder-slate-500"
-                                onkeypress="if(event.key === 'Enter') processSearch()">
-                            <button onclick="processSearch()" class="bg-blue-600 hover:bg-blue-500 px-8 py-3 rounded-xl font-bold transition mr-1">
-                                Morph
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="mt-12">
-                        <p class="text-sm text-slate-500 mb-4 uppercase tracking-wider font-bold">Trending Topics</p>
-                        <div class="flex flex-wrap justify-center gap-3">
-                            <span onclick="autoSearch('newton')" class="cursor-pointer px-4 py-2 rounded-full bg-slate-800 border border-slate-700 hover:border-blue-500 hover:text-blue-400 transition">🍎 Newton's Second Law</span>
-                            <span onclick="autoSearch('photosynthesis')" class="cursor-pointer px-4 py-2 rounded-full bg-slate-800 border border-slate-700 hover:border-green-500 hover:text-green-400 transition">🌿 Photosynthesis</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function autoSearch(term) {
-            document.getElementById('searchInput').value = term;
-            processSearch();
-        }
-
-        function processSearch() {
+        function search() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             const app = document.getElementById('app');
-
-            // Loading State
-            app.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-64 fade-in">
-                    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p class="text-slate-400 animate-pulse">Scanning ${state.board} Syllabus...</p>
-                </div>
-            `;
-
+            app.innerHTML = `<div class="mt-20 text-center"><div class="animate-spin text-4xl mb-4 text-blue-500">🌀</div><p class="text-slate-400">Searching all 9th & 10th concepts...</p></div>`;
+            
             setTimeout(() => {
-                if(term.includes('newton')) state.currentTopicKey = "newton's second law";
-                else if(term.includes('photo')) state.currentTopicKey = "photosynthesis";
-                else state.currentTopicKey = "newton's second law"; // Fallback for demo
+                let topicKey = null;
+
+                // 1. Check Exact Matches (All 6 Concepts)
+                if (term.includes('poly') || term.includes('algebra')) topicKey = "polynomials";
+                else if (term.includes('triang') || term.includes('geo')) topicKey = "triangles";
+                else if (term.includes('newton') || term.includes('force') || term.includes('motion')) topicKey = "newton's second law";
+                else if (term.includes('tissue') || term.includes('cell') || term.includes('bio')) topicKey = "tissues";
+                else if (term.includes('french') || term.includes('revolution')) topicKey = "french revolution";
+                else if (term.includes('nation') || term.includes('india') || term.includes('gandhi')) topicKey = "nationalism in india";
                 
-                renderTopicDashboard();
-            }, 1500);
+                // 2. Check Broader Subject Area (Redirect to most recent sample)
+                else if (term.includes('math')) topicKey = "triangles"; 
+                else if (term.includes('science')) topicKey = "tissues";
+                else if (term.includes('sst') || term.includes('history') || term.includes('civics')) topicKey = "nationalism in india";
+                
+                state.currentTopicKey = topicKey;
+
+                if (topicKey) {
+                    renderModeSelection(); // New step before dashboard
+                } else {
+                    app.innerHTML = `
+                        <div class="mt-20 text-center text-red-400 font-bold max-w-lg mx-auto p-6 glass rounded-xl">
+                            <h3 class="text-xl mb-4 text-yellow-400">Topic Not Found in Sample Database</h3>
+                            <p class="text-slate-300 font-normal">Please search for one of the six loaded concepts, e.g., **Triangles, Tissues, or Nationalism**.</p>
+                            <button onclick="goToSearch()" class="mt-4 text-blue-400 underline font-bold">Try Another Search</button>
+                        </div>`;
+                }
+            }, 800);
         }
 
-        // 3. TOPIC DASHBOARD
-        function renderTopicDashboard(activeTab = 'simple') {
+        // --- NEW RENDER STEP: MODE SELECTION ---
+        function renderModeSelection() {
+            const topicTitle = knowledgeBase[state.currentTopicKey].title;
+            document.getElementById('app').innerHTML = `
+                <div class="fade-in max-w-3xl w-full text-center mt-12">
+                    <h2 class="text-3xl font-bold mb-4">You chose: <span class="gradient-text">${topicTitle}</span></h2>
+                    <p class="text-slate-400 mb-10">How would you like to learn today?</p>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        ${getModeButton('easy', 'Easy Mode (Conceptual)', 'Simplest analogies & story-first.', 'bg-green-600/20 hover:bg-green-600/40')}
+                        ${getModeButton('learning', 'Learning Mode (Balanced)', 'Standard view: Visuals and core definitions.', 'bg-blue-600/20 hover:bg-blue-600/40')}
+                        ${getModeButton('hard', 'Hard Mode (Technical)', 'Formula-first, precision definitions, advanced details.', 'bg-yellow-600/20 hover:bg-yellow-600/40')}
+                        ${getModeButton('finals', 'Finals Mode (Assessment)', 'Exam questions and quick review tabs only. Time to test.', 'bg-red-600/20 hover:bg-red-600/40')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getModeButton(mode, title, desc, colorClass) {
+            return `
+                <div onclick="setMode('${mode}'); renderDashboard()" class="glass-solid p-5 rounded-xl cursor-pointer ${colorClass} text-left transition">
+                    <h3 class="text-xl font-bold mb-2">${title}</h3>
+                    <p class="text-sm text-slate-400">${desc}</p>
+                </div>
+            `;
+        }
+
+        // --- DASHBOARD: ADAPTIVE RENDERING ---
+        function renderDashboard() {
             const data = knowledgeBase[state.currentTopicKey];
             const app = document.getElementById('app');
+            const mode = state.learningMode;
+            let initialTab = 'visual';
+            let tabsToShow = ['simple', 'visual', 'story', 'exam'];
+
+            // Logic to determine initial tab and visible tabs based on mode
+            if (mode === 'easy') initialTab = 'story';
+            else if (mode === 'hard') initialTab = 'visual';
+            else if (mode === 'finals') { 
+                initialTab = 'exam'; 
+                // In finals mode, only show Exam and Quiz button, hide deep content tabs
+                tabsToShow = ['exam', 'simple']; // simple for quick lookup if needed
+            } else { // learning mode
+                initialTab = 'visual';
+            }
+
+            // Determine border color based on subject for visual flair
+            let borderColor = data.tags.includes('Maths') ? 'border-yellow-500' : data.tags.includes('Physics') || data.tags.includes('Biology') ? 'border-green-500' : 'border-red-500';
 
             app.innerHTML = `
                 <div class="fade-in w-full">
-                    <button onclick="goToSearch()" class="mb-4 text-slate-400 hover:text-white text-sm flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Back to Search
-                    </button>
-                    
-                    <div class="flex flex-col lg:flex-row gap-8">
-                        <div class="w-full lg:w-1/4 space-y-4">
-                            <div class="glass-solid p-6 rounded-2xl border-l-4 border-green-500">
-                                <h1 class="text-2xl font-bold leading-tight">${data.title}</h1>
-                                <div class="flex gap-2 mt-3 flex-wrap">
-                                    ${data.tags.map(t => `<span class="px-2 py-1 bg-slate-700 rounded text-xs text-slate-300">${t}</span>`).join('')}
-                                </div>
+                    <button onclick="renderModeSelection()" class="mb-4 text-sm text-slate-400 hover:text-white">&larr; Change Mode</button>
+                    <div class="flex flex-col lg:flex-row gap-6">
+                        <div class="w-full lg:w-1/4">
+                            <div class="glass p-6 rounded-2xl mb-4 border-l-4 ${borderColor}">
+                                <h1 class="text-2xl font-bold">${data.title}</h1>
+                                <div class="text-xs font-bold uppercase mt-2 ${mode === 'finals' ? 'text-red-400' : 'text-blue-400'}">${mode.toUpperCase()} MODE</div>
                             </div>
-                            
-                            <div class="glass-solid p-6 rounded-2xl">
-                                <div class="text-xs font-bold text-slate-400 uppercase mb-4">Actions</div>
-                                <button onclick="openWorksheetModal()" class="w-full py-3 mb-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
-                                    📄 Worksheet
-                                </button>
-                                <button onclick="startQuiz()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-blue-900/50 transition">
-                                    ⚡ Take Quiz
-                                </button>
-                            </div>
+                            <button onclick="startQuiz()" class="w-full py-3 bg-red-600 rounded-xl font-bold mb-2 ${mode === 'finals' ? 'ring-4 ring-red-400/50' : ''}">⚡ Take Quiz ${mode === 'finals' ? '(PRIORITY)' : ''}</button>
                         </div>
-
                         <div class="w-full lg:w-3/4">
-                            <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-                                <button onclick="switchTab('simple')" id="tab-simple" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Simple</button>
-                                <button onclick="switchTab('visual')" id="tab-visual" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Visual</button>
-                                <button onclick="switchTab('story')" id="tab-story" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Story</button>
-                                <button onclick="switchTab('exam')" id="tab-exam" class="px-5 py-2 rounded-full text-sm font-bold border border-transparent transition">Exam</button>
+                            <div class="flex gap-2 mb-4">
+                                ${tabsToShow.map(t => 
+                                    `<button onclick="renderDashboard('${t}')" class="px-4 py-2 rounded-full text-sm font-bold ${initialTab===t ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400'}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`
+                                ).join('')}
                             </div>
-
-                            <div id="content-area" class="glass p-8 rounded-3xl min-h-[400px]">
-                                </div>
+                            <div class="glass p-8 rounded-2xl min-h-[300px]">
+                                ${getContent(initialTab, data)}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-            
-            switchTab(activeTab);
+                </div>`;
+            if(initialTab === 'visual') mermaid.init(undefined, document.querySelectorAll('.mermaid'));
         }
 
-        function switchTab(tabName) {
-            // UI Updates
-            ['simple', 'visual', 'story', 'exam'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                if(t === tabName) {
-                    btn.className = "px-5 py-2 rounded-full text-sm font-bold bg-blue-600 text-white shadow-lg shadow-blue-500/30 transform scale-105 transition";
-                } else {
-                    btn.className = "px-5 py-2 rounded-full text-sm font-bold bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition";
-                }
-            });
-
-            const contentDiv = document.getElementById('content-area');
-            const data = knowledgeBase[state.currentTopicKey];
-
-            // Render Content
-            contentDiv.style.opacity = 0;
-            setTimeout(() => {
-                if(tabName === 'visual') {
-                    contentDiv.innerHTML = `<div class="mermaid">${data.visual}</div>`;
-                    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
-                } else if (tabName === 'exam') {
-                    contentDiv.innerHTML = data.exam.cbse; // simplified for demo
-                } else {
-                    contentDiv.innerHTML = data[tabName];
-                }
-                contentDiv.style.opacity = 1;
-                contentDiv.className = "glass p-8 rounded-3xl min-h-[400px] fade-in";
-            }, 150);
-        }
-
-        function toggleAns(id) {
-            const el = document.getElementById(id);
-            el.classList.toggle('hidden');
-        }
-
-        // 4. QUIZ SYSTEM (Fully Functional)
-        function startQuiz() {
-            state.quizScore = 0;
-            state.quizIndex = 0;
-            renderQuizQuestion();
-        }
-
-        function renderQuizQuestion() {
-            const data = knowledgeBase[state.currentTopicKey];
-            const qData = data.quiz[state.quizIndex];
-            const app = document.getElementById('app');
-
-            app.innerHTML = `
-                <div class="fade-in max-w-2xl w-full mt-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold">Quiz Time</h2>
-                        <span class="text-slate-400 text-sm">Question ${state.quizIndex + 1} of ${data.quiz.length}</span>
-                    </div>
-
-                    <div class="glass p-8 rounded-2xl relative overflow-hidden">
-                        <div class="h-1 bg-slate-700 absolute top-0 left-0 w-full">
-                            <div class="h-full bg-blue-500 transition-all duration-300" style="width: ${((state.quizIndex + 1) / data.quiz.length) * 100}%"></div>
-                        </div>
-
-                        <h3 class="text-xl font-semibold mb-6 mt-2">${qData.q}</h3>
-                        
-                        <div class="space-y-3" id="options-container">
-                            ${qData.options.map((opt, idx) => `
-                                <button onclick="checkAnswer(${idx})" class="option-btn w-full text-left p-4 rounded-xl bg-slate-800 border border-slate-700 hover:border-blue-500 transition flex justify-between items-center group">
-                                    <span>${opt}</span>
-                                    <span class="w-4 h-4 rounded-full border border-slate-500 group-hover:border-blue-500"></span>
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                     <button onclick="renderTopicDashboard()" class="mt-6 text-slate-500 hover:text-white underline text-sm">Cancel Quiz</button>
-                </div>
-            `;
-        }
-
-        function checkAnswer(selectedIndex) {
-            const data = knowledgeBase[state.currentTopicKey];
-            const qData = data.quiz[state.quizIndex];
-            const correctIndex = qData.correct;
-            const buttons = document.querySelectorAll('.option-btn');
-
-            // Disable all buttons
-            buttons.forEach(btn => btn.disabled = true);
-
-            // Logic styling
-            if(selectedIndex === correctIndex) {
-                state.quizScore++;
-                buttons[selectedIndex].classList.remove('bg-slate-800', 'border-slate-700');
-                buttons[selectedIndex].classList.add('bg-green-900', 'border-green-500', 'text-green-100');
-                buttons[selectedIndex].innerHTML += ` ✅`;
-            } else {
-                buttons[selectedIndex].classList.remove('bg-slate-800', 'border-slate-700');
-                buttons[selectedIndex].classList.add('bg-red-900', 'border-red-500', 'text-red-100');
-                buttons[correctIndex].classList.remove('bg-slate-800', 'border-slate-700');
-                buttons[correctIndex].classList.add('bg-green-900', 'border-green-500'); // Show correct one
+        function getContent(tab, data) {
+            // Hard Mode Logic Adjustment: Pulls from multiple sources for density
+            if (state.learningMode === 'hard' && tab === 'simple') {
+                return `
+                    <h3 class="text-xl font-bold text-yellow-400">Technical Overview:</h3>
+                    <p class="mb-4">${data.simple}</p>
+                    <h4 class="font-bold text-slate-300 mt-4">Key Context:</h4>
+                    <p class="text-sm text-slate-400">${data.story}</p>
+                `;
             }
-
-            // Next Question Delay
-            setTimeout(() => {
-                state.quizIndex++;
-                if(state.quizIndex < data.quiz.length) {
-                    renderQuizQuestion();
-                } else {
-                    renderQuizResult(data.quiz.length);
-                }
-            }, 1500);
+            // Easy Mode Logic Adjustment: Prioritizes story and analogy
+            if (state.learningMode === 'easy' && tab === 'story') {
+                return `
+                    <h3 class="text-xl font-bold text-green-400">Analogy First:</h3>
+                    ${data.story}
+                    <h4 class="font-bold text-slate-300 mt-6">Core Concept:</h4>
+                    <p class="text-sm text-slate-400">${data.simple}</p>
+                `;
+            }
+            // Default content
+            if(tab === 'visual') return `<div class="mermaid">${data.visual}</div>`;
+            if(tab === 'exam') return data.exam.cbse || data.exam;
+            return data[tab];
         }
 
-        function renderQuizResult(total) {
-            const percentage = (state.quizScore / total) * 100;
-            let message = "";
-            let action = "";
-            
-            if(percentage === 100) { message = "Perfect Score! 🌟"; action = "You are exam ready."; }
-            else if(percentage > 50) { message = "Good Job! 👍"; action = "Review the weak spots."; }
-            else { message = "Needs Revision 📚"; action = "Go back to the 'Simple' tab."; }
-
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="fade-in max-w-lg w-full text-center mt-12">
-                    <div class="glass p-10 rounded-3xl border-t border-blue-500 shadow-2xl">
-                        <div class="text-6xl mb-4">${percentage === 100 ? '🏆' : '📊'}</div>
-                        <h2 class="text-3xl font-bold mb-2">Quiz Complete</h2>
-                        <p class="text-slate-400 mb-6">${action}</p>
-                        
-                        <div class="text-5xl font-black gradient-text mb-8">${state.quizScore} / ${total}</div>
-                        
-                        <button onclick="renderTopicDashboard()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-white transition">
-                            Back to Topic
-                        </button>
-                    </div>
+        function startQuiz() { 
+            const topic = knowledgeBase[state.currentTopicKey];
+            document.getElementById('modal-content').innerHTML = `
+                <h3 class="text-2xl font-bold text-slate-900">Quiz for: ${topic.title}</h3>
+                <p class="text-slate-600">You are in **${state.learningMode.toUpperCase()} MODE**.</p>
+                <div class="mt-4 p-4 bg-slate-100 rounded-lg border border-slate-300">
+                    <p class="font-bold text-lg text-blue-800">${topic.quiz[0].q}</p>
+                    <p class="text-sm mt-2 text-slate-500">Correct Answer Index: ${topic.quiz[0].correct}</p>
                 </div>
+                <button onclick="closeModal()" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded">Close & Return</button>
             `;
+            document.getElementById('modal-overlay').classList.remove('hidden');
         }
 
-        // 5. WORKSHEET MODAL
-        function openWorksheetModal() {
-            const data = knowledgeBase[state.currentTopicKey];
-            const modal = document.getElementById('modal-overlay');
-            const content = document.getElementById('modal-content');
-
-            content.innerHTML = `
-                <div class="text-center border-b pb-4 mb-4 border-slate-200">
-                    <h2 class="text-2xl font-bold text-slate-900">EduMorph Worksheet</h2>
-                    <p class="text-sm text-slate-500 uppercase">Class ${state.class} • ${state.board} • ${data.title}</p>
-                </div>
-                <div class="space-y-6 text-slate-800">
-                    <div>
-                        <h3 class="font-bold border-b border-slate-300 mb-2">Part A: Define</h3>
-                        <p class="h-20 border border-dashed border-slate-300 rounded bg-slate-50 p-2 text-sm text-slate-400">Student writes here...</p>
-                    </div>
-                    <div>
-                        <h3 class="font-bold border-b border-slate-300 mb-2">Part B: Draw Diagram</h3>
-                        <div class="h-32 border border-slate-300 rounded flex items-center justify-center bg-slate-50">
-                            <span class="text-slate-400 text-sm italic">Draw the ${data.title} diagram here</span>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="font-bold border-b border-slate-300 mb-2">Part C: Solve</h3>
-                        <p class="text-sm mb-2">1. ${data.quiz[1].q}</p>
-                        <p class="h-16 border border-dashed border-slate-300 rounded bg-slate-50"></p>
-                    </div>
-                </div>
-                <div class="mt-6 flex gap-3">
-                    <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-2 rounded-lg hover:bg-slate-800 transition">Print PDF</button>
-                    <button onclick="closeModal()" class="flex-1 border border-slate-300 py-2 rounded-lg hover:bg-slate-100 transition">Close</button>
-                </div>
-            `;
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-        }
-
-        // Init
         init();
-
     </script>
 </body>
 </html>
