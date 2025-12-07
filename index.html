@@ -3,1267 +3,938 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduMorph v3 — India + US • Class 9-10</title>
+  <title>EduMorph — Class 9-10 • India + US</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-    body{font-family:'Outfit',sans-serif}
-    .glass{background:rgba(15,23,42,0.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.06)}
-    .glass2{background:rgba(2,6,23,0.65);border:1px solid rgba(255,255,255,0.06)}
-    .grad-text{background:linear-gradient(90deg,#4ade80,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .soft-border{border:1px solid rgba(255,255,255,0.06)}
-    .chip{border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03)}
-    .chip-active{border-color:rgba(96,165,250,0.6);background:rgba(96,165,250,0.14)}
-    .mode-active{border-color:rgba(34,197,94,0.6);background:rgba(34,197,94,0.14)}
-    .mermaid{background:transparent}
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
+
+    :root{
+      --bg:#050814;
+      --panel:#0b1224;
+      --panel-2:#0a0f1e;
+      --border:rgba(255,255,255,0.08);
+      --muted:#9aa4b2;
+      --text:#f8fafc;
+      --accent:#34d399;
+      --accent2:#60a5fa;
+      --glow:rgba(96,165,250,0.15);
+      --glow2:rgba(52,211,153,0.14);
+      --r-lg:22px;
+      --r-md:14px;
+      --shadow:0 12px 40px rgba(0,0,0,0.45);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      font-family:'Outfit',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(96,165,250,0.10), transparent 40%),
+        radial-gradient(1200px 800px at 90% 20%, rgba(52,211,153,0.10), transparent 40%),
+        radial-gradient(900px 700px at 50% 90%, rgba(168,85,247,0.06), transparent 45%),
+        var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    /* Glass */
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border:1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .glass-soft{
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+      border:1px solid var(--border);
+      border-radius: var(--r-md);
+    }
+
+    /* Grad text */
+    .grad-text{
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Buttons */
+    .btn{
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      transition: transform .12s ease, filter .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      transform-origin:center;
+      user-select:none;
+    }
+    .btn:active{ transform: scale(0.98); }
+    .btn-primary{
+      color:#020617;
+      background: linear-gradient(120deg, var(--accent), #7cf8d1, var(--accent2));
+      box-shadow: 0 10px 30px var(--glow2), inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+    .btn-primary:hover{
+      filter: brightness(1.06);
+      transform: translateY(-1px) scale(1.01);
+    }
+    .btn-ghost{
+      background: rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover{
+      border-color: rgba(96,165,250,0.45);
+      box-shadow: 0 0 0 4px rgba(96,165,250,0.08);
+      transform: translateY(-1px);
+    }
+
+    /* Chips */
+    .chip{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .04em;
+      transition: .18s ease;
+    }
+    .chip:hover{ border-color: rgba(255,255,255,0.18); transform: translateY(-1px); }
+    .chip-active{
+      border-color: rgba(52,211,153,0.6);
+      background: rgba(52,211,153,0.14);
+      color: #ecfff8;
+      box-shadow: 0 0 0 4px rgba(52,211,153,0.08);
+    }
+
+    /* Tabs */
+    .tab{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: .06em;
+      transition: .18s ease;
+    }
+    .tab:hover{ transform: translateY(-1px); }
+    .tab-active{
+      border-color: rgba(96,165,250,0.6);
+      background: rgba(96,165,250,0.14);
+      box-shadow: 0 0 0 4px rgba(96,165,250,0.08);
+    }
+
+    /* Mode pills */
+    .mode{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: .08em;
+      transition:.18s ease;
+    }
+    .mode:hover{ transform: translateY(-1px); }
+    .mode-active{
+      border-color: rgba(52,211,153,0.6);
+      background: rgba(52,211,153,0.12);
+      box-shadow: 0 0 0 4px rgba(52,211,153,0.08);
+    }
+
+    /* Animations */
+    .page-enter{
+      animation: pageEnter .35s cubic-bezier(.2,.9,.2,1);
+    }
+    @keyframes pageEnter{
+      from{ opacity:0; transform: translateY(10px) scale(.99); filter: blur(6px); }
+      to{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    .pop{
+      animation: pop .22s cubic-bezier(.2,1.2,.2,1);
+    }
+    @keyframes pop{
+      0%{ transform: scale(.96); opacity:.5; }
+      100%{ transform: scale(1); opacity:1; }
+    }
+
+    .floaty{
+      animation: floaty 5.5s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-8px); }
+    }
+
+    .floaty2{
+      animation: floaty2 7s ease-in-out infinite;
+    }
+    @keyframes floaty2{
+      0%,100%{ transform: translateY(0) translateX(0); }
+      50%{ transform: translateY(-10px) translateX(6px); }
+    }
+
+    .glow-ring{
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 0 24px var(--glow),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Mermaid container polish */
+    .diagram-wrap{
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      overflow: auto;
+    }
+    .mermaid{
+      background: transparent !important;
+    }
+
+    /* Inputs */
+    .input{
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      outline: none;
+      width: 100%;
+      transition: .2s ease;
+    }
+    .input:focus{
+      border-color: rgba(96,165,250,0.5);
+      box-shadow: 0 0 0 4px rgba(96,165,250,0.12);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{ width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track{ background: rgba(255,255,255,0.02); }
+    ::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.12); border-radius: 999px; }
   </style>
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100">
 
-  <nav class="fixed top-0 left-0 right-0 z-50 glass">
-    <div class="max-w-7xl mx-auto px-4 md:px-10 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="resetApp()">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-slate-950 font-black">E</div>
-        <div>
-          <div class="text-xl font-extrabold tracking-tight">Edu<span class="grad-text">Morph</span></div>
-          <div class="text-[10px] tracking-widest uppercase text-slate-400">v3 demo • India + US • 9-10</div>
+<body class="min-h-screen">
+
+  <!-- Top Bar -->
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 md:px-10 py-4">
+      <div class="glass px-4 md:px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="resetApp()">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-slate-950 font-black glow-ring">E</div>
+          <div>
+            <div class="text-lg md:text-xl font-extrabold tracking-tight">
+              Edu<span class="grad-text">Morph</span>
+            </div>
+            <div class="text-[10px] tracking-widest uppercase text-slate-400">
+              Class 9-10 • India + US
+            </div>
+          </div>
         </div>
+        <div id="badge" class="hidden chip"></div>
       </div>
-      <div id="badge" class="hidden text-xs font-mono px-3 py-1 rounded-full bg-slate-900 soft-border text-emerald-300"></div>
     </div>
-  </nav>
+  </div>
 
-  <main id="app" class="pt-24 pb-12 px-4 md:px-10 max-w-7xl mx-auto"></main>
+  <main id="app" class="pt-28 pb-14 px-4 md:px-10 max-w-7xl mx-auto"></main>
 
-  <script>
-    mermaid.initialize({ startOnLoad: false, theme: "dark", securityLevel: "loose" });
+<script>
+  mermaid.initialize({ startOnLoad: false, theme: "dark", securityLevel: "loose" });
 
-    const TOPIC_LIBRARY = [
-      {
-        id: "force-laws",
-        title: "Force and Laws of Motion",
-        subject: "SCIENCE",
-        strand: "Physics",
-        grades: [9],
-        tags: ["Newton", "Inertia", "F=ma", "Momentum"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Force] --> B[Changes state of motion]
-            B --> C[Acceleration]
-            C --> D[F = m * a]
-            A --> E[Newton's Laws]
-            E --> E1[1st: Inertia]
-            E --> E2[2nd: F=ma]
-            E --> E3[3rd: Action-Reaction]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "Force is a push or pull that can change an object's state of motion.",
-                "Newton’s First Law explains inertia: objects resist change in motion.",
-                "Newton’s Second Law links force, mass, and acceleration: F = m × a.",
-                "Newton’s Third Law: every action has an equal and opposite reaction.",
-                "Momentum depends on mass and velocity and changes when force acts."
-              ],
-              easy: [
-                "Force changes motion.",
-                "Heavier objects need more force to speed up.",
-                "F = m × a is the key formula."
-              ],
-              hard: [
-                "Relate force to rate of change of momentum.",
-                "Explain real-world cases using all 3 laws together.",
-                "Solve mixed numericals with mass, acceleration, and momentum."
-              ],
-              exam: [
-                "State Newton’s three laws with one example each.",
-                "A 5 kg object accelerates at 2 m/s². Find force.",
-                "Why does a gun recoil when a bullet is fired?"
-              ],
-              finals: [
-                "Mixed 5-mark: explain inertia + give applications in daily life.",
-                "Numerical set combining F=ma and momentum change."
-              ]
-            },
-            ICSE: {
-              learning: [
-                "Force causes acceleration or changes direction.",
-                "Inertia is proportional to mass.",
-                "F = m × a helps quantify motion change.",
-                "Action-reaction pairs act on different bodies."
-              ],
-              easy: [
-                "More mass = more inertia.",
-                "Force makes things speed up or slow down."
-              ],
-              hard: [
-                "Use precise definitions and units in answers.",
-                "Link laws to momentum-based reasoning."
-              ],
-              exam: [
-                "Define inertia and state its types.",
-                "Derive F = m × a using momentum idea (short)."
-              ],
-              finals: [
-                "Answer a structured 5-mark with diagram + example + numerical."
-              ]
-            }
+  /* ========= DATA (starter pack) ========= */
+  const TOPIC_LIBRARY = [
+    {
+      id:"force-laws",
+      title:"Force and Laws of Motion",
+      subject:"SCIENCE",
+      strand:"Physics",
+      grades:[9],
+      tags:["Newton","Inertia","F=ma","Momentum"],
+      visuals:{ mermaid:`
+        graph TD
+        A[Force] --> B[Changes motion]
+        B --> C[Acceleration]
+        C --> D[F = m * a]
+        A --> E[Newton's Laws]
+        E --> E1[1st: Inertia]
+        E --> E2[2nd: F=ma]
+        E --> E3[3rd: Action-Reaction]
+      `},
+      content:{
+        INDIA:{
+          CBSE:{
+            learning:[
+              "Force is a push/pull that can change state of motion.",
+              "Newton’s First Law explains inertia.",
+              "Newton’s Second Law: F = m × a.",
+              "Newton’s Third Law: action-reaction pairs act on different bodies.",
+              "Momentum changes when force acts for time."
+            ],
+            easy:[
+              "Force changes motion.",
+              "More mass needs more force.",
+              "F = m × a is the main formula."
+            ],
+            hard:[
+              "Connect F=ma with momentum change ideas.",
+              "Explain multi-law real-life cases.",
+              "Solve mixed numericals."
+            ],
+            exam:[
+              "State Newton’s three laws with examples.",
+              "A 5 kg object accelerates at 2 m/s². Find force.",
+              "Why does a gun recoil?"
+            ],
+            finals:[
+              "Mixed 5-mark: inertia + applications.",
+              "Numerical set combining F=ma and momentum."
+            ]
           },
-          US: {
-            COMMON_CORE: {
-              learning: [
-                "Forces cause changes in motion that we describe using acceleration.",
-                "The net force determines how an object’s velocity changes.",
-                "Mass measures resistance to acceleration.",
-                "Action-reaction pairs are equal in size but act on different objects."
-              ],
-              easy: [
-                "Net force controls acceleration.",
-                "More mass needs more force."
-              ],
-              hard: [
-                "Analyze multi-force free-body scenarios.",
-                "Explain why equal forces don’t cancel across different objects."
-              ],
-              exam: [
-                "Explain the relationship between net force and acceleration.",
-                "Use a free-body diagram to justify motion."
-              ],
-              finals: [
-                "Short test combining conceptual + diagram + one numerical."
-              ]
-            },
-            NGSS: {
-              learning: [
-                "Motion changes when a net force acts on an object.",
-                "Models like free-body diagrams help explain evidence-based claims."
-              ],
-              easy: [
-                "If forces balance, motion doesn’t change."
-              ],
-              hard: [
-                "Argument from evidence using diagrams or data."
-              ],
-              exam: [
-                "Construct an explanation using a free-body diagram."
-              ],
-              finals: [
-                "Claim-evidence-reasoning response."
-              ]
-            }
+          ICSE:{
+            learning:[
+              "Force causes acceleration or changes direction.",
+              "Inertia is proportional to mass.",
+              "F = m × a quantifies motion change.",
+              "Action-reaction forces act on different bodies."
+            ],
+            easy:["More mass = more inertia.","Force makes motion change."],
+            hard:["Use precise definitions and units.","Link laws to momentum reasoning."],
+            exam:["Define inertia and its types.","Short derivation idea of F=ma."],
+            finals:["Structured 5-mark + one numerical."]
           }
         },
-        quizPool: [
-          { q: "Newton's First Law is about:", options: ["Acceleration", "Inertia", "Momentum", "Gravity"], correct: 1 },
-          { q: "If mass increases and force stays same, acceleration:", options: ["Increases", "Decreases", "Becomes infinite", "Stays same"], correct: 1 },
-          { q: "F = m × a. Unit of force:", options: ["Joule", "Newton", "Watt", "Pascal"], correct: 1 },
-          { q: "Action-reaction forces act on:", options: ["Same body", "Different bodies", "Only moving bodies", "Only stationary bodies"], correct: 1 }
-        ]
-      },
-
-      {
-        id: "work-energy",
-        title: "Work, Energy and Power",
-        subject: "SCIENCE",
-        strand: "Physics",
-        grades: [9],
-        tags: ["W=Fs", "K.E.", "P.E.", "Power"],
-        visuals: {
-          mermaid: `
-            graph LR
-            A[Force] --> B[Displacement]
-            B --> C[Work]
-            C --> D[Energy]
-            D --> E[Kinetic]
-            D --> F[Potential]
-            C --> G[Power = Work/Time]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "Work is done when a force causes displacement in its direction.",
-                "W = F × s (for force along displacement).",
-                "Energy is the capacity to do work.",
-                "Kinetic energy depends on motion; potential energy depends on position.",
-                "Power is the rate of doing work: P = W / t."
-              ],
-              easy: [
-                "No displacement = zero work.",
-                "Work is measured in Joules.",
-                "Power tells how fast work happens."
-              ],
-              hard: [
-                "Distinguish types of energy with real examples.",
-                "Solve multi-step numericals using W and P."
-              ],
-              exam: [
-                "Define work and power with SI units.",
-                "A 20 N force moves a block 3 m. Find work done.",
-                "Differentiate kinetic and potential energy."
-              ],
-              finals: [
-                "Case-based numerical + 5-mark conceptual."
-              ]
-            },
-            ICSE: {
-              learning: [
-                "Work requires force and displacement.",
-                "Energy transforms between forms.",
-                "Power depends on time taken."
-              ],
-              easy: [
-                "W = F × s is the core formula."
-              ],
-              hard: [
-                "Use precise definitions and conditions for work."
-              ],
-              exam: [
-                "State conditions for work to be done.",
-                "Solve a basic W = F × s numerical."
-              ],
-              finals: [
-                "Structured answer with definitions + numerical."
-              ]
-            }
+        US:{
+          COMMON_CORE:{
+            learning:[
+              "Net force determines acceleration.",
+              "Mass measures resistance to acceleration.",
+              "Action-reaction forces are equal but act on different objects."
+            ],
+            easy:["Balanced forces mean no change in motion.","More mass needs more net force."],
+            hard:["Analyze simple free-body scenarios.","Explain why action-reaction don't cancel."],
+            exam:["Explain net force vs acceleration.","Justify motion with a diagram."],
+            finals:["Short conceptual + one numerical."]
           },
-          US: {
-            COMMON_CORE: {
-              learning: [
-                "Work transfers energy when a force moves an object.",
-                "Power describes how quickly energy is transferred.",
-                "Energy can change form while total energy is conserved in ideal cases."
-              ],
-              easy: [
-                "More force or distance = more work."
-              ],
-              hard: [
-                "Analyze energy transfer in real systems with losses."
-              ],
-              exam: [
-                "Explain energy transfer using work and power."
-              ],
-              finals: [
-                "Short mixed conceptual set."
-              ]
-            },
-            NGSS: {
-              learning: [
-                "Energy transfer can be tracked across system boundaries.",
-                "Models help explain conversions between kinetic and potential energy."
-              ],
-              easy: [
-                "Energy changes form; it doesn’t vanish."
-              ],
-              hard: [
-                "Use evidence-based explanation of energy transformations."
-              ],
-              exam: [
-                "Develop a model for energy change."
-              ],
-              finals: [
-                "CER response with a diagram."
-              ]
-            }
+          NGSS:{
+            learning:[
+              "Motion changes when a net force acts.",
+              "Models like diagrams support evidence-based explanations."
+            ],
+            easy:["If forces balance, motion doesn't change."],
+            hard:["Claim-evidence-reasoning using diagrams."],
+            exam:["Construct explanation with a model."],
+            finals:["CER response."]
           }
-        },
-        quizPool: [
-          { q: "Work is done when:", options: ["Force is applied", "Displacement occurs", "Object is at rest", "Mass increases"], correct: 1 },
-          { q: "SI unit of work:", options: ["Watt", "Newton", "Joule", "Pascal"], correct: 2 },
-          { q: "Power equals:", options: ["W×t", "W/t", "F×m", "m/a"], correct: 1 }
-        ]
+        }
       },
+      quizPool:[
+        {q:"Newton's First Law is about:", options:["Acceleration","Inertia","Momentum","Gravity"], correct:1},
+        {q:"If mass increases and force stays same, acceleration:", options:["Increases","Decreases","Stays same","Becomes infinite"], correct:1},
+        {q:"Unit of force:", options:["Joule","Newton","Watt","Pascal"], correct:1},
+        {q:"Action-reaction forces act on:", options:["Same body","Different bodies","Only moving bodies","Only stationary bodies"], correct:1}
+      ]
+    },
 
-      {
-        id: "atoms-molecules",
-        title: "Atoms and Molecules",
-        subject: "SCIENCE",
-        strand: "Chemistry",
-        grades: [9],
-        tags: ["Valency", "Formula", "Conservation of Mass"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Atoms] --> B[Molecules]
-            B --> C[Chemical Formula]
-            A --> D[Valency]
-            D --> C
-            E[Law of Conservation of Mass] --> F[Reactions]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "Atoms are the basic units of matter.",
-                "Molecules form when atoms combine chemically.",
-                "Valency is the combining capacity of an atom.",
-                "Chemical formulas represent composition using valency.",
-                "Mass is conserved in chemical reactions."
-              ],
-              easy: [
-                "Valency helps write formulas.",
-                "Atoms combine in fixed ratios."
-              ],
-              hard: [
-                "Write formulas of complex salts using valency.",
-                "Explain conservation of mass with examples."
-              ],
-              exam: [
-                "Define valency with examples.",
-                "Write formula of aluminium sulphate.",
-                "State law of conservation of mass."
-              ],
-              finals: [
-                "Formula-writing set + short reasoning."
-              ]
-            },
-            ICSE: {
-              learning: [
-                "Atomicity and valency explain how elements combine.",
-                "Formulas can be derived using the cross method."
-              ],
-              easy: [
-                "Oxygen is O₂, atomicity 2."
-              ],
-              hard: [
-                "Apply valency to polyatomic ions."
-              ],
-              exam: [
-                "Define atomicity with examples.",
-                "Write formulas using valency."
-              ],
-              finals: [
-                "Mixed objective + short answers."
-              ]
-            }
+    {
+      id:"work-energy",
+      title:"Work, Energy and Power",
+      subject:"SCIENCE",
+      strand:"Physics",
+      grades:[9],
+      tags:["W=Fs","K.E.","P.E.","Power"],
+      visuals:{ mermaid:`
+        graph LR
+        A[Force] --> B[Displacement]
+        B --> C[Work]
+        C --> D[Energy]
+        D --> E[Kinetic]
+        D --> F[Potential]
+        C --> G[Power = Work/Time]
+      `},
+      content:{
+        INDIA:{
+          CBSE:{
+            learning:[
+              "Work is done when force causes displacement in its direction.",
+              "W = F × s (same direction).",
+              "Energy is the capacity to do work.",
+              "Kinetic energy is due to motion; potential energy due to position.",
+              "Power is rate of doing work: P = W/t."
+            ],
+            easy:["No displacement = zero work.","Work is measured in Joules.","Power tells speed of work."],
+            hard:["Compare energy types with examples.","Solve multi-step numericals."],
+            exam:["Define work and power with units.","A 20 N force moves 3 m. Find work.","Differentiate K.E. and P.E."],
+            finals:["Case-based numerical + 5-mark conceptual."]
           },
-          US: {
-            NGSS: {
-              learning: [
-                "Atoms rearrange during reactions to form new substances.",
-                "The number of each type of atom is conserved."
-              ],
-              easy: [
-                "Atoms don’t disappear in reactions."
-              ],
-              hard: [
-                "Use models to explain rearrangement."
-              ],
-              exam: [
-                "Explain conservation of atoms using a model."
-              ],
-              finals: [
-                "Short model-based response."
-              ]
-            },
-            COMMON_CORE: {
-              learning: [
-                "Symbols and formulas represent composition and ratios.",
-                "Mass conservation links to atom conservation."
-              ],
-              easy: [
-                "Formulas show how many atoms combine."
-              ],
-              hard: [
-                "Connect formula ratios to reaction balancing (intro)."
-              ],
-              exam: [
-                "Interpret chemical formulas."
-              ],
-              finals: [
-                "Short interpretive set."
-              ]
-            }
+          ICSE:{
+            learning:["Work needs force and displacement.","Energy transforms between forms.","Power depends on time."],
+            easy:["W = F × s is key."],
+            hard:["State conditions for work carefully."],
+            exam:["Conditions for work to be done.","Basic W = F × s numerical."],
+            finals:["Structured answer set."]
           }
         },
-        quizPool: [
-          { q: "Valency means:", options: ["Atomic number", "Combining capacity", "Mass", "Size"], correct: 1 },
-          { q: "Atomicity of oxygen:", options: ["1", "2", "3", "4"], correct: 1 },
-          { q: "Formula of aluminium sulphate:", options: ["AlSO4", "Al2(SO4)3", "Al3SO4", "Al(SO4)2"], correct: 1 }
-        ]
+        US:{
+          COMMON_CORE:{
+            learning:[
+              "Work transfers energy when a force moves an object.",
+              "Power measures how quickly energy is transferred.",
+              "Energy changes form across systems."
+            ],
+            easy:["More force or distance gives more work."],
+            hard:["Analyze energy transfers with losses."],
+            exam:["Explain work and power with examples."],
+            finals:["Short mixed conceptual set."]
+          }
+        }
       },
+      quizPool:[
+        {q:"Work is done when:", options:["Force is applied","Displacement occurs","Mass increases","Object is at rest"], correct:1},
+        {q:"SI unit of work:", options:["Watt","Newton","Joule","Pascal"], correct:2},
+        {q:"Power equals:", options:["W×t","W/t","F×m","m/a"], correct:1}
+      ]
+    },
 
-      {
-        id: "tissues",
-        title: "Tissues",
-        subject: "SCIENCE",
-        strand: "Biology",
-        grades: [9],
-        tags: ["Epithelial", "Connective", "Muscular", "Nervous"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Animal Tissues] --> B[Epithelial]
-            A --> C[Connective]
-            A --> D[Muscular]
-            A --> E[Nervous]
-            C --> C1[Blood]
-            C --> C2[Bone]
-            C --> C3[Cartilage]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "Tissue is a group of similar cells performing a specific function.",
-                "Epithelial tissue covers surfaces and provides protection.",
-                "Connective tissue supports, binds, and transports materials.",
-                "Muscular tissue enables movement.",
-                "Nervous tissue controls and coordinates body functions."
-              ],
-              easy: [
-                "Blood is a connective tissue.",
-                "Epithelial tissue forms a protective layer."
-              ],
-              hard: [
-                "Differentiate types with functions and locations.",
-                "Write exam-style comparisons."
-              ],
-              exam: [
-                "Define tissue. Why are tissues important?",
-                "Differentiate epithelial and connective tissue.",
-                "Explain types of muscular tissue."
-              ],
-              finals: [
-                "5-mark: classify animal tissues with examples."
-              ]
-            },
-            ICSE: {
-              learning: [
-                "Animal tissues are classified by structure and function.",
-                "Each tissue type has subtypes and specific roles."
-              ],
-              easy: [
-                "Nervous tissue transmits impulses."
-              ],
-              hard: [
-                "Explain classification with examples."
-              ],
-              exam: [
-                "Describe epithelial tissue with functions.",
-                "Explain connective tissue and its types."
-              ],
-              finals: [
-                "Structured long answer with diagram cues."
-              ]
-            }
-          },
-          US: {
-            NGSS: {
-              learning: [
-                "Cells specialize and organize into tissues that support systems.",
-                "Structure relates to function across tissue types."
-              ],
-              easy: [
-                "Tissues are groups of similar cells."
-              ],
-              hard: [
-                "Explain structure-function relationships."
-              ],
-              exam: [
-                "Use evidence to explain tissue roles."
-              ],
-              finals: [
-                "Short system-connection response."
-              ]
-            }
+    {
+      id:"linear-equations",
+      title:"Linear Equations in Two Variables",
+      subject:"MATH",
+      strand:"Algebra",
+      grades:[9],
+      tags:["Pairs","Graph","Infinite solutions"],
+      visuals:{ mermaid:`
+        graph TD
+        A[ax + by + c = 0] --> B[Infinite solutions]
+        B --> C[Ordered pairs]
+        C --> D[Plot points]
+        D --> E[Straight line]
+      `},
+      content:{
+        INDIA:{
+          CBSE:{
+            learning:[
+              "Linear equations in two variables have form ax + by + c = 0.",
+              "They have infinitely many solutions.",
+              "Solutions are ordered pairs (x, y).",
+              "Graph of such equation is a straight line.",
+              "Tables help generate points."
+            ],
+            easy:["Pick x, find y.","Graph is a straight line."],
+            hard:["Interpret intercepts informally.","Translate simple word problems."],
+            exam:["Write three solutions of 2x + y = 6.","Draw graph of x + 2y = 8.","Why infinite solutions?"],
+            finals:["Graph + reasoning + application."]
           }
         },
-        quizPool: [
-          { q: "Which is a connective tissue?", options: ["Skin", "Blood", "Neuron", "Smooth muscle"], correct: 1 },
-          { q: "Tissue that coordinates body functions:", options: ["Epithelial", "Connective", "Nervous", "Muscular"], correct: 2 }
-        ]
+        US:{
+          COMMON_CORE:{
+            learning:[
+              "Linear equations model constant rate relationships.",
+              "Tables, graphs, and equations represent the same relationship.",
+              "A line on a graph shows all solutions."
+            ],
+            easy:["A line represents infinite solutions."],
+            hard:["Compare two linear models."],
+            exam:["Graph from a table.","Interpret slope & intercept (intro)."],
+            finals:["Short modeling set."]
+          }
+        }
       },
+      quizPool:[
+        {q:"Graph of a linear equation in two variables is:", options:["Circle","Parabola","Straight line","Hyperbola"], correct:2},
+        {q:"Number of solutions of 2x + y = 6:", options:["1","2","Infinite","0"], correct:2}
+      ]
+    },
 
-      {
-        id: "linear-equations",
-        title: "Linear Equations in Two Variables",
-        subject: "MATH",
-        strand: "Algebra",
-        grades: [9],
-        tags: ["Pairs", "Graph", "Solutions"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Linear equation in two variables] --> B[Infinite solutions]
-            A --> C[Represent as ordered pairs]
-            C --> D[Plot points]
-            D --> E[Straight line graph]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "A linear equation in two variables has the form ax + by + c = 0.",
-                "It has infinitely many solutions.",
-                "Solutions can be written as ordered pairs (x, y).",
-                "Plotting solutions gives a straight line.",
-                "Tables help generate points for graphing."
-              ],
-              easy: [
-                "Pick x, solve for y, make pairs.",
-                "Graph of a linear equation is a straight line."
-              ],
-              hard: [
-                "Interpret intercepts and slope intuitively (basic level).",
-                "Solve real-life word problems that translate into linear relations."
-              ],
-              exam: [
-                "Write any three solutions of 2x + y = 6.",
-                "Draw graph of x + 2y = 8.",
-                "Explain why there are infinitely many solutions."
-              ],
-              finals: [
-                "Graph + reasoning + application problem."
-              ]
-            },
-            ICSE: {
-              learning: [
-                "Linear relations represent straight-line patterns.",
-                "Graphing helps visualize solutions."
-              ],
-              easy: [
-                "Make a table of values and plot."
-              ],
-              hard: [
-                "Use graph to interpret solutions."
-              ],
-              exam: [
-                "Find solutions and represent graphically."
-              ],
-              finals: [
-                "Mixed graph + application."
-              ]
-            }
-          },
-          US: {
-            COMMON_CORE: {
-              learning: [
-                "A linear equation models relationships with a constant rate of change.",
-                "Graphs show all solutions as a straight line.",
-                "Tables, graphs, and equations are equivalent representations."
-              ],
-              easy: [
-                "A line represents all solutions."
-              ],
-              hard: [
-                "Compare two linear models and interpret meaning."
-              ],
-              exam: [
-                "Use a table to graph a linear equation.",
-                "Interpret slope and intercept in context (intro)."
-              ],
-              finals: [
-                "Short modeling set."
-              ]
-            }
+    {
+      id:"french-revolution",
+      title:"The French Revolution",
+      subject:"SST",
+      strand:"History",
+      grades:[9],
+      tags:["Estates","1789","Rights"],
+      visuals:{ mermaid:`
+        graph TD
+        A[French Society] --> B[First Estate: Clergy]
+        A --> C[Second Estate: Nobility]
+        A --> D[Third Estate]
+        D --> E[Taxes + poverty]
+        E --> F[1789 Revolution]
+        F --> G[Rights of Man]
+      `},
+      content:{
+        INDIA:{
+          CBSE:{
+            learning:[
+              "France had a three-estate system with unequal privileges.",
+              "The Third Estate paid most taxes and had least power.",
+              "Economic crisis and Enlightenment ideas fueled unrest.",
+              "1789 began major political change in France.",
+              "Revolution spread ideas of liberty and equality."
+            ],
+            easy:["Three estates system was unfair.","Third Estate suffered most."],
+            hard:["Link causes to social, political, economic factors.","Evaluate impact on democracy."],
+            exam:["Describe the three estates.","State two causes.","What was Declaration of Rights?"],
+            finals:["5-mark cause-impact answer."]
           }
         },
-        quizPool: [
-          { q: "Graph of a linear equation in two variables is:", options: ["Circle", "Parabola", "Straight line", "Hyperbola"], correct: 2 },
-          { q: "Number of solutions of 2x + y = 6:", options: ["1", "2", "Infinite", "0"], correct: 2 }
-        ]
-      },
-
-      {
-        id: "quadratic-equations",
-        title: "Quadratic Equations",
-        subject: "MATH",
-        strand: "Algebra",
-        grades: [10],
-        tags: ["Factorisation", "Roots", "Formula"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Quadratic ax^2+bx+c=0] --> B[Factorisation]
-            A --> C[Completing Square]
-            A --> D[Quadratic Formula]
-            D --> E[Discriminant b^2-4ac]
-            E --> F[Nature of Roots]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "A quadratic equation has degree 2: ax² + bx + c = 0.",
-                "It can be solved by factorisation, completing square, or formula.",
-                "Discriminant (b² − 4ac) tells the nature of roots.",
-                "Real-life problems can be modeled using quadratics.",
-                "Check solutions by substitution."
-              ],
-              easy: [
-                "Try factorisation first.",
-                "Use formula when factoring is hard."
-              ],
-              hard: [
-                "Interpret discriminant cases carefully.",
-                "Solve word problems involving area, speed, or numbers."
-              ],
-              exam: [
-                "Solve x² − 5x + 6 = 0 by factorisation.",
-                "Find roots using quadratic formula.",
-                "State nature of roots using discriminant."
-              ],
-              finals: [
-                "Mixed 5-question set including one word problem."
-              ]
-            }
-          },
-          US: {
-            COMMON_CORE: {
-              learning: [
-                "Quadratics model curved relationships like projectile motion.",
-                "Solutions are x-intercepts of the parabola.",
-                "Factoring and the quadratic formula are standard methods."
-              ],
-              easy: [
-                "Factoring gives roots quickly."
-              ],
-              hard: [
-                "Connect algebraic solutions to graph features."
-              ],
-              exam: [
-                "Solve a quadratic by factoring and interpret meaning."
-              ],
-              finals: [
-                "Short modeling + algebra set."
-              ]
-            }
+        US:{
+          US_HISTORY:{
+            learning:[
+              "The French Revolution reshaped ideas about rights and citizenship.",
+              "It influenced democratic movements globally."
+            ],
+            easy:["Unfair society led to revolt."],
+            hard:["Compare themes with other revolutions."],
+            exam:["Explain causes and outcomes."],
+            finals:["Short comparative response."]
           }
-        },
-        quizPool: [
-          { q: "Discriminant is:", options: ["b²+4ac", "b²−4ac", "a²−4bc", "c²−4ab"], correct: 1 }
-        ]
+        }
       },
-
-      {
-        id: "french-revolution",
-        title: "The French Revolution",
-        subject: "SST",
-        strand: "History",
-        grades: [9],
-        tags: ["Estates", "1789", "Liberty", "Equality"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[French Society] --> B[First Estate: Clergy]
-            A --> C[Second Estate: Nobility]
-            A --> D[Third Estate: Commoners]
-            D --> E[Heavy taxes + poverty]
-            E --> F[1789 Revolution]
-            F --> G[Declaration of Rights]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "French society was divided into three estates with unequal privileges.",
-                "The Third Estate bore heavy taxes and had little political power.",
-                "Economic crisis and Enlightenment ideas fueled unrest.",
-                "1789 marked major political transformation in France.",
-                "The revolution popularized ideals of liberty and equality."
-              ],
-              easy: [
-                "Three estates system was unfair.",
-                "Third Estate suffered most."
-              ],
-              hard: [
-                "Link causes to social, political, economic, and intellectual factors.",
-                "Evaluate the revolution’s impact on modern democracy."
-              ],
-              exam: [
-                "Describe the three estates.",
-                "State two causes of the French Revolution.",
-                "What was the Declaration of the Rights of Man and Citizen?"
-              ],
-              finals: [
-                "5-mark cause-impact answer with examples."
-              ]
-            }
-          },
-          US: {
-            US_HISTORY: {
-              learning: [
-                "The French Revolution reshaped ideas about rights and citizenship.",
-                "It influenced global democratic movements.",
-                "Social inequality and fiscal crisis were central triggers."
-              ],
-              easy: [
-                "Unfair society led to revolution."
-              ],
-              hard: [
-                "Compare themes with other revolutions."
-              ],
-              exam: [
-                "Explain key causes and outcomes."
-              ],
-              finals: [
-                "Short comparative response."
-              ]
-            }
-          }
-        },
-        quizPool: [
-          { q: "Which estate paid most taxes?", options: ["First", "Second", "Third", "None"], correct: 2 }
-        ]
-      },
-
-      {
-        id: "nationalism-india",
-        title: "Nationalism in India",
-        subject: "SST",
-        strand: "History",
-        grades: [10],
-        tags: ["Gandhi", "Non-Cooperation", "Civil Disobedience"],
-        visuals: {
-          mermaid: `
-            graph TD
-            A[Colonial Rule] --> B[National Movement]
-            B --> C[Non-Cooperation 1920]
-            B --> D[Civil Disobedience 1930]
-            D --> E[Dandi March]
-            B --> F[Quit India 1942]
-          `
-        },
-        content: {
-          INDIA: {
-            CBSE: {
-              learning: [
-                "Indian nationalism grew in response to colonial exploitation and cultural awakening.",
-                "Gandhi introduced mass movements rooted in satyagraha.",
-                "Non-Cooperation aimed to withdraw support from British institutions.",
-                "Civil Disobedience challenged unjust laws symbolically and practically.",
-                "Different social groups participated with different hopes and pressures."
-              ],
-              easy: [
-                "Gandhi led mass movements.",
-                "Salt March was a key event."
-              ],
-              hard: [
-                "Analyze participation of peasants, workers, business classes, and women.",
-                "Evaluate limits of unity and regional differences."
-              ],
-              exam: [
-                "Explain Non-Cooperation Movement.",
-                "What was the significance of the Dandi March?",
-                "How did different groups join the movement?"
-              ],
-              finals: [
-                "5-mark analytical answer + source-based question."
-              ]
-            }
-          }
-        },
-        quizPool: [
-          { q: "Dandi March was part of:", options: ["Non-Cooperation", "Civil Disobedience", "Swadeshi", "Quit India"], correct: 1 }
-        ]
-      }
-    ];
-
-    const SYSTEMS = {
-      INDIA: {
-        label: "India",
-        systems: ["CBSE", "ICSE"]
-      },
-      US: {
-        label: "United States",
-        systems: ["COMMON_CORE", "NGSS", "US_HISTORY"]
-      },
-      GLOBAL: {
-        label: "Global",
-        systems: ["GENERIC"]
-      }
-    };
-
-    let state = {
-      step: "setup",
-      grade: 9,
-      region: "INDIA",
-      system: "CBSE",
-      subject: "ALL",
-      mode: "LEARNING",
-      search: "",
-      activeTopicId: null,
-      tab: "CONTENT",
-      timed: {
-        running: false,
-        remaining: 0,
-        questions: [],
-        answers: {},
-        startedAt: 0
-      }
-    };
-
-    const MODE_KEYS = {
-      EASY: "easy",
-      HARD: "hard",
-      LEARNING: "learning",
-      EXAM: "exam",
-      FINALS: "finals"
-    };
-
-    function resetApp() {
-      state.step = "setup";
-      state.activeTopicId = null;
-      state.search = "";
-      state.subject = "ALL";
-      state.mode = "LEARNING";
-      state.tab = "CONTENT";
-      state.timed.running = false;
-      document.getElementById("badge").classList.add("hidden");
-      render();
+      quizPool:[
+        {q:"Which estate paid most taxes?", options:["First","Second","Third","None"], correct:2}
+      ]
     }
+  ];
 
-    function setBadge() {
-      const b = document.getElementById("badge");
-      const regionLabel = SYSTEMS[state.region].label;
-      const sysLabel = state.system.replace("_", " ");
-      b.textContent = `${regionLabel} • ${sysLabel} • Class ${state.grade}`;
-      b.classList.remove("hidden");
+  const SYSTEMS = {
+    INDIA:{ label:"India", systems:["CBSE","ICSE"] },
+    US:{ label:"United States", systems:["COMMON_CORE","NGSS","US_HISTORY"] }
+  };
+
+  const MODE_KEYS = {
+    EASY:"easy",
+    HARD:"hard",
+    LEARNING:"learning",
+    EXAM:"exam",
+    FINALS:"finals"
+  };
+
+  /* ========= STATE ========= */
+  let state = {
+    step:"setup",
+    grade:9,
+    region:"INDIA",
+    system:"CBSE",
+    subject:"ALL",
+    mode:"LEARNING",
+    search:"",
+    activeTopicId:null,
+    tab:"CONTENT",
+    timed:{
+      running:false,
+      remaining:0,
+      questions:[],
+      answers:{}
     }
+  };
 
-    function getTopicsFiltered() {
-      const q = state.search.trim().toLowerCase();
-      return TOPIC_LIBRARY.filter(t => t.grades.includes(state.grade))
-        .filter(t => state.subject === "ALL" ? true : t.subject === state.subject)
-        .filter(t => {
-          if (!q) return true;
-          const hay = `${t.title} ${(t.tags||[]).join(" ")} ${t.strand||""}`.toLowerCase();
-          return hay.includes(q);
-        })
-        .sort((a,b) => a.subject.localeCompare(b.subject) || a.title.localeCompare(b.title));
-    }
+  /* ========= HELPERS ========= */
+  const $ = (id) => document.getElementById(id);
 
-    function resolveContentBlock(topic) {
-      const modeKey = MODE_KEYS[state.mode];
-      const regionBlock = topic.content?.[state.region];
-      if (!regionBlock) return null;
+  function escapeHtml(str){
+    return String(str||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
 
-      if (state.region === "INDIA") {
-        const sys = regionBlock?.[state.system];
-        return sys?.[modeKey] || sys?.learning || null;
-      }
+  function setBadge(){
+    const badge = $("badge");
+    badge.textContent = `${SYSTEMS[state.region].label} • ${state.system.replace("_"," ")} • Class ${state.grade}`;
+    badge.className = "chip chip-active";
+    badge.classList.remove("hidden");
+  }
 
-      if (state.region === "US") {
-        const sys = regionBlock?.[state.system];
-        return sys?.[modeKey] || sys?.learning || null;
-      }
+  function getTopicsFiltered(){
+    const q = state.search.trim().toLowerCase();
+    return TOPIC_LIBRARY
+      .filter(t=>t.grades.includes(state.grade))
+      .filter(t=>state.subject==="ALL" ? true : t.subject===state.subject)
+      .filter(t=>{
+        if(!q) return true;
+        const hay = `${t.title} ${(t.tags||[]).join(" ")} ${t.strand||""}`.toLowerCase();
+        return hay.includes(q);
+      })
+      .sort((a,b)=>a.subject.localeCompare(b.subject)||a.title.localeCompare(b.title));
+  }
 
-      const sys = regionBlock?.GENERIC;
-      return sys?.[modeKey] || sys?.learning || null;
-    }
+  function resolveBlock(topic){
+    const modeKey = MODE_KEYS[state.mode];
+    const regionBlock = topic.content?.[state.region];
+    if(!regionBlock) return null;
+    const sys = regionBlock?.[state.system];
+    return sys?.[modeKey] || sys?.learning || null;
+  }
 
-    function resolveExamQs(topic) {
-      const regionBlock = topic.content?.[state.region];
-      if (!regionBlock) return [];
-      if (state.region === "INDIA") return regionBlock?.[state.system]?.exam || [];
-      if (state.region === "US") return regionBlock?.[state.system]?.exam || [];
-      return regionBlock?.GENERIC?.exam || [];
-    }
+  function resolveExamQs(topic){
+    const regionBlock = topic.content?.[state.region];
+    const sys = regionBlock?.[state.system];
+    return sys?.exam || [];
+  }
 
-    function resolveFinalsQs(topic) {
-      const regionBlock = topic.content?.[state.region];
-      if (!regionBlock) return [];
-      if (state.region === "INDIA") return regionBlock?.[state.system]?.finals || [];
-      if (state.region === "US") return regionBlock?.[state.system]?.finals || [];
-      return regionBlock?.GENERIC?.finals || [];
-    }
+  function resolveFinalsQs(topic){
+    const regionBlock = topic.content?.[state.region];
+    const sys = regionBlock?.[state.system];
+    return sys?.finals || [];
+  }
 
-    function buildQuizPool(topic) {
-      const pool = topic.quizPool || [];
-      const exam = resolveExamQs(topic).map(q => ({
-        q,
-        options: ["(Open-ended)", "(Open-ended)", "(Open-ended)", "(Open-ended)"],
-        correct: 0,
-        open: true
-      }));
-      return [...pool, ...exam.slice(0,2)];
-    }
+  /* ========= ANIMATION HOOK ========= */
+  function mount(html){
+    const app = $("app");
+    app.innerHTML = `<div class="page-enter">${html}</div>`;
+  }
 
-    function pickRandom(arr, n) {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a.slice(0, n);
-    }
+  /* ========= RENDER: SETUP (front page) ========= */
+  function renderSetup(){
+    const html = `
+      <section class="grid lg:grid-cols-2 gap-6 items-stretch">
+        <!-- LEFT: HERO -->
+        <div class="glass p-8 md:p-10 relative overflow-hidden">
+          <div class="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl"></div>
+          <div class="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-blue-500/10 blur-3xl"></div>
 
-    function renderSetup() {
-      const app = document.getElementById("app");
-      app.innerHTML = `
-        <div class="mt-6 grid lg:grid-cols-2 gap-6">
-          <div class="glass rounded-3xl p-8">
-            <div class="text-sm tracking-widest uppercase text-slate-400 font-bold">Welcome</div>
-            <h1 class="text-4xl md:text-5xl font-extrabold mt-2">
-              Learn <span class="grad-text">your</span> way.
-            </h1>
-            <p class="text-slate-400 mt-4 text-lg">
-              EduMorph adapts explanations, visuals, practice, and exam-style prompts for Class 9 & 10 learners in India and the US.
-            </p>
-
-            <div class="mt-8 space-y-5">
-              <div>
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-2">Select Class</div>
-                <div class="flex gap-2">
-                  ${[9,10].map(g => `
-                    <button class="chip px-4 py-3 rounded-xl font-bold ${state.grade===g?'chip-active':''}"
-                      onclick="setGrade(${g})">Class ${g}</button>
-                  `).join("")}
-                </div>
-              </div>
-
-              <div>
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-2">Region</div>
-                <div class="flex flex-wrap gap-2">
-                  ${Object.keys(SYSTEMS).map(r => `
-                    <button class="chip px-4 py-3 rounded-xl font-bold ${state.region===r?'chip-active':''}"
-                      onclick="setRegion('${r}')">${SYSTEMS[r].label}</button>
-                  `).join("")}
-                </div>
-              </div>
-
-              <div>
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-2">Board / Curriculum</div>
-                <div class="flex flex-wrap gap-2">
-                  ${SYSTEMS[state.region].systems.map(s => `
-                    <button class="chip px-4 py-3 rounded-xl font-bold ${state.system===s?'chip-active':''}"
-                      onclick="setSystem('${s}')">${s.replace("_"," ")}</button>
-                  `).join("")}
-                </div>
-                <div class="text-[11px] text-slate-500 mt-2">
-                  This demo uses a curated starter library. You can expand it by adding topics in the dataset.
-                </div>
-              </div>
-            </div>
-
-            <button onclick="startApp()" class="mt-8 w-full py-4 rounded-xl bg-gradient-to-r from-emerald-400 to-blue-500 text-slate-950 font-extrabold text-lg">
-              Start Morphing →
-            </button>
+          <div class="flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-slate-400 font-bold">
+            <span class="chip">Adaptive learning</span>
+            <span class="chip">Offline demo</span>
+            <span class="chip">9-10</span>
           </div>
 
-          <div class="glass rounded-3xl p-8">
-            <div class="text-sm tracking-widest uppercase text-slate-400 font-bold">What you get</div>
-            <div class="mt-4 grid sm:grid-cols-2 gap-3">
-              ${[
-                ["Modes that matter","Easy, Hard, Learning, Exam, Finals"],
-                ["Real visuals","Mermaid concept maps"],
-                ["India + US","Board/curriculum-aware content"],
-                ["Timed quizzes","2-minute blitz + micro-quiz"],
-                ["Search library","Filter by subject & grade"],
-                ["Offline demo-ready","No backend needed"]
-              ].map(x=>`
-                <div class="glass2 rounded-2xl p-4">
-                  <div class="font-bold">${x[0]}</div>
-                  <div class="text-slate-400 text-sm mt-1">${x[1]}</div>
-                </div>
+          <h1 class="text-4xl md:text-5xl font-black mt-5 leading-[1.05]">
+            Study faster. <br/>
+            Understand deeper. <br/>
+            <span class="grad-text">No wasted revision.</span>
+          </h1>
+
+          <p class="text-slate-300/90 mt-4 text-base md:text-lg">
+            Pick your class and curriculum. EduMorph adjusts explanation style, difficulty,
+            and exam prompts in one clean workspace.
+          </p>
+
+          <div class="mt-8 grid sm:grid-cols-3 gap-3">
+            ${featureCard("Modes that matter","Easy → Learning → Hard → Exam → Finals")}
+            ${featureCard("Clean visuals","Concept maps for faster memory")}
+            ${featureCard("India + US","CBSE/ICSE + Common Core/NGSS")}
+          </div>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <button class="btn btn-primary px-6" onclick="startApp()">
+              Start
+            </button>
+            <button class="btn btn-ghost px-6" onclick="previewLibrary()">
+              Preview topics
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: SETUP FLOW -->
+        <div class="glass p-8 md:p-10">
+          <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold">Quick setup</div>
+          <div class="text-2xl font-extrabold mt-2">Choose your track</div>
+
+          <!-- STEP 1 -->
+          <div class="glass-soft p-5 mt-6">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-extrabold">Class</div>
+              <div class="text-[10px] text-slate-400 tracking-widest uppercase">Step 1</div>
+            </div>
+            <div class="mt-3 flex gap-2">
+              ${[9,10].map(g=>`
+                <button class="chip ${state.grade===g?'chip-active':''}" onclick="setGrade(${g})">Class ${g}</button>
+              `).join("")}
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="glass-soft p-5 mt-4">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-extrabold">Region</div>
+              <div class="text-[10px] text-slate-400 tracking-widest uppercase">Step 2</div>
+            </div>
+            <div class="mt-3 flex gap-2 flex-wrap">
+              ${Object.keys(SYSTEMS).map(r=>`
+                <button class="chip ${state.region===r?'chip-active':''}" onclick="setRegion('${r}')">
+                  ${SYSTEMS[r].label}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="glass-soft p-5 mt-4">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-extrabold">Curriculum</div>
+              <div class="text-[10px] text-slate-400 tracking-widest uppercase">Step 3</div>
+            </div>
+            <div class="mt-3 flex gap-2 flex-wrap">
+              ${SYSTEMS[state.region].systems.map(s=>`
+                <button class="chip ${state.system===s?'chip-active':''}" onclick="setSystem('${s}')">
+                  ${s.replace("_"," ")}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <button class="btn btn-primary w-full" onclick="startApp()">
+              Enter Workspace →
+            </button>
+            <div class="text-[11px] text-slate-500 mt-3">
+              This is a polished offline demo. You can expand the topic library anytime.
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+    mount(html);
+  }
+
+  function featureCard(title, desc){
+    return `
+      <div class="glass-soft p-4">
+        <div class="text-sm font-extrabold">${title}</div>
+        <div class="text-xs text-slate-400 mt-1">${desc}</div>
+      </div>
+    `;
+  }
+
+  function previewLibrary(){
+    state.step = "dashboard";
+    setBadge();
+    render();
+  }
+
+  /* ========= DASHBOARD ========= */
+  function renderDashboard(){
+    const topics = getTopicsFiltered();
+    const active = state.activeTopicId
+      ? TOPIC_LIBRARY.find(t=>t.id===state.activeTopicId)
+      : (topics[0] || null);
+
+    if(active && !state.activeTopicId) state.activeTopicId = active.id;
+
+    const html = `
+      <section class="grid lg:grid-cols-12 gap-5">
+        <!-- LIBRARY -->
+        <aside class="lg:col-span-4">
+          <div class="glass p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-[10px] tracking-[0.25em] uppercase text-slate-400 font-bold">Topic library</div>
+                <div class="text-lg font-extrabold mt-1">Pick & Morph</div>
+              </div>
+              <button class="btn btn-ghost text-xs px-3 py-2" onclick="resetFilters()">Reset</button>
+            </div>
+
+            <div class="mt-4">
+              <input class="input"
+                     id="searchBox"
+                     value="${escapeHtml(state.search)}"
+                     placeholder="Search: Quadratic • Tissues • French Revolution"
+                     oninput="updateSearch(this.value)"/>
+            </div>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              ${["ALL","MATH","SCIENCE","SST"].map(s=>`
+                <button class="chip ${state.subject===s?'chip-active':''}" onclick="setSubject('${s}')">${s}</button>
               `).join("")}
             </div>
 
-            <div class="mt-8 glass2 rounded-2xl p-5">
-              <div class="font-bold">Starter coverage included</div>
-              <div class="text-slate-400 text-sm mt-2">
-                Major foundational topics across Math, Science and SST for Class 9 & 10
-                with both India and US-aligned phrasing.
-              </div>
-              <div class="text-slate-500 text-xs mt-3">
-                You can scale this to “every concept” by adding more topic objects — the app logic already supports it.
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderDashboard() {
-      const app = document.getElementById("app");
-      const topics = getTopicsFiltered();
-      const active = state.activeTopicId ? TOPIC_LIBRARY.find(t=>t.id===state.activeTopicId) : (topics[0] || null);
-
-      if (active && !state.activeTopicId) state.activeTopicId = active.id;
-
-      app.innerHTML = `
-        <div class="grid lg:grid-cols-12 gap-5 mt-2">
-
-          <aside class="lg:col-span-4">
-            <div class="glass rounded-3xl p-5">
-              <div class="flex items-center justify-between">
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold">Library</div>
-                <button class="text-xs px-2 py-1 rounded-lg chip"
-                  onclick="resetFilters()">Reset</button>
-              </div>
-
-              <div class="mt-3">
-                <input id="searchBox" value="${escapeHtml(state.search)}"
-                  oninput="updateSearch(this.value)"
-                  class="w-full px-4 py-3 rounded-xl bg-slate-900 soft-border outline-none"
-                  placeholder="Search topics (e.g., Quadratic, French Revolution, Tissues)" />
-              </div>
-
-              <div class="mt-3 flex flex-wrap gap-2">
-                ${["ALL","MATH","SCIENCE","SST"].map(s=>`
-                  <button class="chip px-3 py-2 rounded-xl text-sm font-bold ${state.subject===s?'chip-active':''}"
-                    onclick="setSubject('${s}')">${s}</button>
-                `).join("")}
-              </div>
-
-              <div class="mt-4 max-h-[55vh] overflow-auto pr-1">
-                ${topics.length ? topics.map(t => `
-                  <button onclick="openTopic('${t.id}')"
-                    class="w-full text-left p-3 rounded-2xl mb-2 ${t.id===state.activeTopicId?'chip-active':'chip'}">
-                    <div class="flex items-center justify-between">
-                      <div class="font-bold">${t.title}</div>
-                      <div class="text-[10px] px-2 py-0.5 rounded-full bg-slate-900 soft-border text-slate-400">${t.subject}</div>
-                    </div>
-                    <div class="text-xs text-slate-400 mt-1">${t.strand || ""}</div>
-                    <div class="text-[10px] text-slate-500 mt-1">${(t.tags||[]).slice(0,4).join(" • ")}</div>
-                  </button>
-                `).join("") : `
-                  <div class="text-sm text-slate-400 p-4">
-                    No matching topics found for this filter.
-                  </div>
-                `}
-              </div>
-            </div>
-          </aside>
-
-          <section class="lg:col-span-8">
-            <div class="glass rounded-3xl p-6">
-
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div>
-                  <div class="text-xs tracking-widest uppercase text-slate-400 font-bold">Active Topic</div>
-                  <div class="text-2xl font-extrabold mt-1">${active ? active.title : "Select a topic"}</div>
-                  <div class="text-sm text-slate-400 mt-1">
-                    ${active ? `${active.subject} • ${active.strand || ""} • Class ${state.grade}` : ""}
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                  ${["EASY","LEARNING","HARD","EXAM","FINALS"].map(m => `
-                    <button class="chip px-3 py-2 rounded-xl text-sm font-extrabold ${state.mode===m?'mode-active':''}"
-                      onclick="setMode('${m}')">${m}</button>
-                  `).join("")}
-                </div>
-              </div>
-
-              <div class="mt-4 flex flex-wrap gap-2">
-                ${["CONTENT","VISUAL","PRACTICE","QUIZ"].map(t => `
-                  <button class="chip px-4 py-2 rounded-xl text-sm font-bold ${state.tab===t?'chip-active':''}"
-                    onclick="setTab('${t}')">${t}</button>
-                `).join("")}
-              </div>
-
-              <div class="mt-6">
-                ${renderActivePanel(active)}
-              </div>
-
-            </div>
-          </section>
-        </div>
-      `;
-
-      if (state.tab === "VISUAL" && active?.visuals?.mermaid) {
-        const nodes = document.querySelectorAll(".mermaid");
-        try { mermaid.init(undefined, nodes); } catch(e) {}
-      }
-    }
-
-    function renderActivePanel(topic) {
-      if (!topic) {
-        return `<div class="text-slate-400">Select a topic from the left panel.</div>`;
-      }
-
-      if (state.tab === "CONTENT") {
-        const block = resolveContentBlock(topic);
-        const list = Array.isArray(block) ? block : null;
-
-        const finalsQs = resolveFinalsQs(topic);
-        const examQs = resolveExamQs(topic);
-
-        const modeLabel = state.mode;
-        const sysLabel = state.system.replace("_"," ");
-        const regionLabel = SYSTEMS[state.region].label;
-
-        return `
-          <div class="glass2 rounded-2xl p-6">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-[10px] tracking-widest uppercase px-2 py-1 rounded-full bg-slate-900 soft-border text-emerald-300 font-bold">${regionLabel}</span>
-              <span class="text-[10px] tracking-widest uppercase px-2 py-1 rounded-full bg-slate-900 soft-border text-blue-300 font-bold">${sysLabel}</span>
-              <span class="text-[10px] tracking-widest uppercase px-2 py-1 rounded-full bg-slate-900 soft-border text-slate-300 font-bold">${modeLabel}</span>
-            </div>
-
-            <div class="mt-4 space-y-2 text-[17px] leading-relaxed">
-              ${list ? list.map(x=>`<div>• ${x}</div>`).join("") : `
-                <div class="text-slate-400">
-                  This mode isn't filled for this track yet. The app will fall back to Learning mode when you expand the library.
+            <div class="mt-4 max-h-[58vh] overflow-auto pr-1">
+              ${topics.length ? topics.map(t=>topicCard(t)).join("") : `
+                <div class="glass-soft p-4 text-sm text-slate-400">
+                  No results. Try a different keyword.
                 </div>
               `}
             </div>
+          </div>
+        </aside>
 
-            ${(state.mode==="EXAM" && examQs.length) ? `
-              <div class="mt-6">
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-2">Exam-style prompts</div>
-                <div class="space-y-2">
-                  ${examQs.map(q=>`<div class="chip rounded-xl p-3 text-sm">• ${escapeHtml(q)}</div>`).join("")}
+        <!-- WORKSPACE -->
+        <section class="lg:col-span-8">
+          <div class="glass p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <div class="text-[10px] tracking-[0.25em] uppercase text-slate-400 font-bold">Workspace</div>
+                <div class="text-2xl font-black mt-1">${active ? active.title : "Select a topic"}</div>
+                <div class="text-sm text-slate-400 mt-1">
+                  ${active ? `${active.subject} • ${active.strand || ""} • Class ${state.grade}` : ""}
                 </div>
               </div>
-            ` : ""}
 
-            ${(state.mode==="FINALS" && finalsQs.length) ? `
-              <div class="mt-6">
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-2">Finals-mode mix</div>
-                <div class="space-y-2">
-                  ${finalsQs.map(q=>`<div class="chip rounded-xl p-3 text-sm">• ${escapeHtml(q)}</div>`).join("")}
-                </div>
+              <div class="flex flex-wrap gap-2">
+                ${["EASY","LEARNING","HARD","EXAM","FINALS"].map(m=>`
+                  <button class="mode ${state.mode===m?'mode-active':''}" onclick="setMode('${m}')">${m}</button>
+                `).join("")}
               </div>
-            ` : ""}
-          </div>
-        `;
-      }
-
-      if (state.tab === "VISUAL") {
-        const m = topic.visuals?.mermaid;
-        return `
-          <div class="glass2 rounded-2xl p-6">
-            <div class="text-xs tracking-widest uppercase text-slate-400 font-bold mb-3">Concept map</div>
-            ${m ? `<div class="mermaid">${m}</div>` : `
-              <div class="text-slate-400">No visual map added for this topic yet.</div>
-            `}
-            <div class="text-[11px] text-slate-500 mt-4">
-              Add a Mermaid block inside <span class="text-slate-300">visuals.mermaid</span> for any new topic and it will render automatically.
             </div>
-          </div>
-        `;
-      }
 
-      if (state.tab === "PRACTICE") {
-        const examQs = resolveExamQs(topic);
-        const finalsQs = resolveFinalsQs(topic);
-        const pool = [
-          ...(topic.quizPool || []).filter(x=>!x.open).map(x=>x.q),
-          ...examQs,
-          ...finalsQs
-        ].slice(0, 14);
-
-        return `
-          <div class="glass2 rounded-2xl p-6">
-            <div class="flex items-center justify-between">
-              <div class="text-xs tracking-widest uppercase text-slate-400 font-bold">Practice set</div>
-              <span class="text-[10px] px-2 py-1 rounded-full bg-slate-900 soft-border text-slate-400">${state.mode}</span>
-            </div>
-            <div class="mt-4 space-y-2">
-              ${pool.length ? pool.map((q,i)=>`
-                <div class="chip rounded-xl p-3 text-sm">
-                  <span class="text-slate-400">${i+1}.</span> ${escapeHtml(q)}
-                </div>
-              `).join("") : `
-                <div class="text-slate-400">Practice bank will grow as you add more topics and questions.</div>
-              `}
-            </div>
-          </div>
-        `;
-      }
-
-      if (state.tab === "QUIZ") {
-        return renderQuizPanel(topic);
-      }
-
-      return "";
-    }
-
-    function renderQuizPanel(topic) {
-      const pool = buildQuizPool(topic).filter(x=>!x.open);
-      const micro = pickRandom(pool.length ? pool : (topic.quizPool||[]), 3);
-
-      const timedRunning = state.timed.running && state.timed.questions.length;
-
-      return `
-        <div class="grid md:grid-cols-2 gap-4">
-
-          <div class="glass2 rounded-2xl p-6">
-            <div class="text-xs tracking-widest uppercase text-slate-400 font-bold">Micro-Quiz</div>
-            <div class="text-sm text-slate-400 mt-1">3 quick MCQs for this topic</div>
-
-            <div class="mt-4 space-y-3">
-              ${micro.map((qObj, idx) => `
-                <div class="chip rounded-xl p-3">
-                  <div class="font-bold text-sm">${escapeHtml(qObj.q)}</div>
-                  <div class="mt-2 space-y-1">
-                    ${qObj.options.map((op, i) => `
-                      <label class="flex items-center gap-2 text-sm text-slate-200">
-                        <input type="radio" name="micro_${idx}" value="${i}" class="accent-emerald-400">
-                        <span>${escapeHtml(op)}</span>
-                      </label>
-                    `).join("")}
-                  </div>
-                </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              ${["CONTENT","VISUAL","PRACTICE","QUIZ"].map(t=>`
+                <button class="tab ${state.tab===t?'tab-active':''}" onclick="setTab('${t}')">${t}</button>
               `).join("")}
             </div>
 
-            <button class="mt-4 w-full py-3 rounded-xl bg-emerald-400 text-slate-950 font-extrabold"
-              onclick="checkMicroQuiz(${JSON.stringify(micro).replaceAll('"', '&quot;')})">
-              Check Micro-Score
-            </button>
-            <div id="microScore" class="mt-3 text-sm"></div>
+            <div class="mt-6">
+              ${renderActivePanel(active)}
+            </div>
+          </div>
+        </section>
+      </section>
+    `;
+    mount(html);
+
+    if(state.tab==="VISUAL" && active?.visuals?.mermaid){
+      try{ mermaid.init(undefined, document.querySelectorAll(".mermaid")); }catch(e){}
+    }
+  }
+
+  function topicCard(t){
+    const active = t.id===state.activeTopicId;
+    return `
+      <button onclick="openTopic('${t.id}')"
+              class="w-full text-left p-4 mb-2 glass-soft ${active?'glow-ring':''}"
+              style="${active ? 'border-color: rgba(96,165,250,0.45); background: rgba(96,165,250,0.08);' : ''}">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-extrabold">${t.title}</div>
+          <span class="chip">${t.subject}</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-1">${t.strand || ""}</div>
+        <div class="text-[10px] text-slate-500 mt-1">${(t.tags||[]).slice(0,4).join(" • ")}</div>
+      </button>
+    `;
+  }
+
+  /* ========= PANELS ========= */
+  function renderActivePanel(topic){
+    if(!topic){
+      return `<div class="glass-soft p-5 text-slate-400">Select a topic from the left.</div>`;
+    }
+
+    if(state.tab==="CONTENT"){
+      const block = resolveBlock(topic);
+      const examQs = resolveExamQs(topic);
+      const finalsQs = resolveFinalsQs(topic);
+
+      return `
+        <div class="glass-soft p-6 pop">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="chip chip-active">${SYSTEMS[state.region].label}</span>
+            <span class="chip">${state.system.replace("_"," ")}</span>
+            <span class="chip">${state.mode}</span>
           </div>
 
-          <div class="glass2 rounded-2xl p-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs tracking-widest uppercase text-slate-400 font-bold">2-Minute Blitz</div>
-                <div class="text-sm text-slate-400 mt-1">5 fast MCQs • timed</div>
-              </div>
-              <div class="text-[10px] px-2 py-1 rounded-full bg-slate-900 soft-border text-blue-300 font-bold">
-                ${state.mode}
-              </div>
-            </div>
-
-            ${timedRunning ? renderTimedQuizRunning() : `
-              <div class="mt-4 chip rounded-xl p-4 text-sm text-slate-300">
-                Start a timed test. Your score will be shown automatically when time ends.
-              </div>
-              <button class="mt-4 w-full py-3 rounded-xl bg-blue-500 text-white font-extrabold"
-                onclick="startTimedQuiz('${topic.id}')">
-                Start 2-Minute Quiz
-              </button>
+          <div class="mt-4 space-y-2 text-[17px] leading-relaxed">
+            ${Array.isArray(block) ? block.map(x=>`<div>• ${escapeHtml(x)}</div>`).join("") : `
+              <div class="text-slate-400">This mode isn’t filled for this track yet. Expand the library to add it.</div>
             `}
           </div>
 
+          ${state.mode==="EXAM" && examQs.length ? `
+            <div class="mt-6">
+              <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold mb-2">Exam prompts</div>
+              <div class="space-y-2">
+                ${examQs.map(q=>`<div class="glass-soft p-3 text-sm">• ${escapeHtml(q)}</div>`).join("")}
+              </div>
+            </div>
+          ` : ""}
+
+          ${state.mode==="FINALS" && finalsQs.length ? `
+            <div class="mt-6">
+              <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold mb-2">Finals mix</div>
+              <div class="space-y-2">
+                ${finalsQs.map(q=>`<div class="glass-soft p-3 text-sm">• ${escapeHtml(q)}</div>`).join("")}
+              </div>
+            </div>
+          ` : ""}
         </div>
       `;
     }
 
-    function renderTimedQuizRunning() {
-      const qs = state.timed.questions;
+    if(state.tab==="VISUAL"){
+      const m = topic.visuals?.mermaid;
+      return `
+        <div class="glass-soft p-6 pop">
+          <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold">Concept map</div>
+          <div class="mt-3 diagram-wrap">
+            ${m ? `<div class="mermaid">${m}</div>` : `<div class="text-slate-400">No diagram added yet.</div>`}
+          </div>
+          <div class="text-[11px] text-slate-500 mt-3">
+            This uses Mermaid. Any new topic with a Mermaid block will render automatically.
+          </div>
+        </div>
+      `;
+    }
+
+    if(state.tab==="PRACTICE"){
+      const pool = [
+        ...(topic.quizPool||[]).map(x=>x.q),
+        ...resolveExamQs(topic),
+        ...resolveFinalsQs(topic)
+      ].slice(0, 14);
 
       return `
-        <div class="mt-4">
-          <div class="flex items-center justify-between chip rounded-xl p-3">
-            <div class="text-sm font-bold">Time left</div>
-            <div id="timerDisplay" class="text-lg font-extrabold text-emerald-300">${formatTime(state.timed.remaining)}</div>
+        <div class="glass-soft p-6 pop">
+          <div class="flex items-center justify-between">
+            <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold">Practice set</div>
+            <span class="chip">${state.mode}</span>
           </div>
+          <div class="mt-4 space-y-2">
+            ${pool.length ? pool.map((q,i)=>`
+              <div class="glass-soft p-3 text-sm">
+                <span class="text-slate-500">${i+1}.</span> ${escapeHtml(q)}
+              </div>
+            `).join("") : `<div class="text-slate-400">Practice bank will grow as you add more topics.</div>`}
+          </div>
+        </div>
+      `;
+    }
 
-          <div class="mt-3 max-h-[360px] overflow-auto pr-1 space-y-2">
-            ${qs.map((qObj, idx) => `
-              <div class="chip rounded-xl p-3">
-                <div class="font-bold text-sm">${idx+1}. ${escapeHtml(qObj.q)}</div>
-                <div class="mt-2 grid grid-cols-1 gap-1">
-                  ${qObj.options.map((op, i) => `
+    if(state.tab==="QUIZ"){
+      return renderQuizPanel(topic);
+    }
+
+    return "";
+  }
+
+  /* ========= QUIZ ========= */
+  function pickRandom(arr,n){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a.slice(0,n);
+  }
+
+  function renderQuizPanel(topic){
+    const pool = (topic.quizPool||[]);
+    const micro = pickRandom(pool, Math.min(3, pool.length));
+
+    const timedRunning = state.timed.running && state.timed.questions.length;
+
+    return `
+      <div class="grid md:grid-cols-2 gap-4 pop">
+        <!-- MICRO -->
+        <div class="glass-soft p-6">
+          <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold">Micro-Quiz</div>
+          <div class="text-sm text-slate-400 mt-1">Quick accuracy check</div>
+
+          <div class="mt-4 space-y-3">
+            ${micro.map((qObj, idx)=>`
+              <div class="glass-soft p-3">
+                <div class="font-bold text-sm">${escapeHtml(qObj.q)}</div>
+                <div class="mt-2 space-y-1">
+                  ${qObj.options.map((op,i)=>`
                     <label class="flex items-center gap-2 text-sm">
-                      <input type="radio" name="timed_${idx}" value="${i}"
-                        onchange="recordTimedAnswer(${idx}, ${i})"
-                        class="accent-blue-400" ${state.timed.answers[idx]===i ? "checked" : ""}>
+                      <input type="radio" name="micro_${idx}" value="${i}">
                       <span>${escapeHtml(op)}</span>
                     </label>
                   `).join("")}
@@ -1272,145 +943,196 @@
             `).join("")}
           </div>
 
-          <button class="mt-4 w-full py-3 rounded-xl bg-slate-800 soft-border font-bold"
-            onclick="finishTimedQuizEarly()">
-            Finish & Score Now
+          <button class="btn btn-primary w-full mt-4"
+            onclick="checkMicroQuiz(${JSON.stringify(micro).replaceAll('"','&quot;')})">
+            Check Score
           </button>
+          <div id="microScore" class="mt-3 text-sm"></div>
+        </div>
+
+        <!-- TIMED -->
+        <div class="glass-soft p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs tracking-[0.25em] uppercase text-slate-400 font-bold">2-Minute Blitz</div>
+              <div class="text-sm text-slate-400 mt-1">Speed + accuracy</div>
+            </div>
+            <span class="chip">${state.mode}</span>
+          </div>
+
+          ${timedRunning ? renderTimedRunning() : `
+            <div class="mt-4 glass-soft p-4 text-sm text-slate-300">
+              5 fast MCQs. Auto-score when time ends.
+            </div>
+            <button class="btn btn-ghost w-full mt-4"
+              onclick="startTimedQuiz('${topic.id}')">
+              Start 2-Minute Quiz
+            </button>
+          `}
 
           <div id="timedScoreBox" class="mt-3 text-sm"></div>
         </div>
-      `;
-    }
+      </div>
+    `;
+  }
 
-    function setGrade(g){ state.grade = g; state.activeTopicId = null; render(); }
-    function setRegion(r){
-      state.region = r;
-      state.system = SYSTEMS[r].systems[0];
-      state.activeTopicId = null;
-      render();
-    }
-    function setSystem(s){ state.system = s; state.activeTopicId = null; render(); }
-    function startApp(){ state.step="dashboard"; setBadge(); render(); }
-    function setSubject(s){ state.subject = s; state.activeTopicId = null; render(); }
-    function setMode(m){ state.mode = m; render(); }
-    function setTab(t){ state.tab = t; render(); }
-    function updateSearch(v){ state.search = v; state.activeTopicId = null; render(); }
-    function openTopic(id){ state.activeTopicId = id; state.tab="CONTENT"; state.timed.running=false; render(); }
-    function resetFilters(){ state.subject="ALL"; state.search=""; state.activeTopicId=null; render(); }
+  function checkMicroQuiz(microArr){
+    let score=0;
+    microArr.forEach((qObj,idx)=>{
+      const sel=document.querySelector(`input[name="micro_${idx}"]:checked`);
+      if(sel && Number(sel.value)===qObj.correct) score++;
+    });
+    const pct=Math.round((score/microArr.length)*100);
+    const msg = pct>=80 ? "Strong." : pct>=50 ? "Good. Revise once." : "Revisit basics.";
+    $("microScore").innerHTML = `
+      <div class="glass-soft p-3">
+        <span class="font-extrabold">${score}/${microArr.length}</span>
+        <span class="text-slate-400 ml-1">(${pct}%)</span>
+        <span class="ml-2">${msg}</span>
+      </div>
+    `;
+  }
 
-    function checkMicroQuiz(microArr) {
-      let score = 0;
-      microArr.forEach((qObj, idx) => {
-        const sel = document.querySelector(`input[name="micro_${idx}"]:checked`);
-        if (sel && Number(sel.value) === qObj.correct) score++;
-      });
-      const box = document.getElementById("microScore");
-      const pct = Math.round((score / microArr.length) * 100);
-      const msg = pct >= 80 ? "Strong!" : pct >= 50 ? "Good — revise once." : "Needs revision.";
-      box.innerHTML = `
-        <div class="chip rounded-xl p-3">
-          <span class="font-extrabold">${score}/${microArr.length}</span>
-          <span class="text-slate-400">(${pct}%)</span>
-          <span class="ml-2">${msg}</span>
-        </div>
-      `;
-    }
+  /* Timed quiz engine */
+  let timerHandle=null;
 
-    function startTimedQuiz(topicId) {
-      const topic = TOPIC_LIBRARY.find(t=>t.id===topicId);
-      const pool = (topic.quizPool || []).filter(x=>!x.open);
-      const qs = pickRandom(pool.length ? pool : (topic.quizPool||[]), 5);
+  function startTimedQuiz(topicId){
+    const topic = TOPIC_LIBRARY.find(t=>t.id===topicId);
+    const pool = (topic.quizPool||[]);
+    const qs = pickRandom(pool, Math.min(5, pool.length));
 
-      state.timed.running = true;
-      state.timed.remaining = 120;
-      state.timed.questions = qs;
-      state.timed.answers = {};
-      state.timed.startedAt = Date.now();
-
-      render();
-
-      runTimerTick();
-    }
-
-    let timerHandle = null;
-
-    function runTimerTick() {
-      if (timerHandle) clearInterval(timerHandle);
-      timerHandle = setInterval(() => {
-        if (!state.timed.running) {
-          clearInterval(timerHandle);
-          timerHandle = null;
-          return;
-        }
-        state.timed.remaining -= 1;
-        const d = document.getElementById("timerDisplay");
-        if (d) d.textContent = formatTime(state.timed.remaining);
-
-        if (state.timed.remaining <= 0) {
-          finishTimedQuiz();
-        }
-      }, 1000);
-    }
-
-    function recordTimedAnswer(qIndex, optIndex) {
-      state.timed.answers[qIndex] = optIndex;
-    }
-
-    function finishTimedQuizEarly() {
-      finishTimedQuiz();
-    }
-
-    function finishTimedQuiz() {
-      const qs = state.timed.questions;
-      let score = 0;
-      qs.forEach((qObj, idx) => {
-        const ans = state.timed.answers[idx];
-        if (ans !== undefined && ans === qObj.correct) score++;
-      });
-
-      state.timed.running = false;
-
-      const pct = Math.round((score / qs.length) * 100);
-      const msg = pct >= 80 ? "Finals-ready pace." : pct >= 50 ? "Good speed — tighten accuracy." : "Slow down, learn first.";
-
-      render();
-
-      setTimeout(() => {
-        const box = document.getElementById("timedScoreBox");
-        if (box) {
-          box.innerHTML = `
-            <div class="chip rounded-xl p-3">
-              <span class="font-extrabold">Timed Score:</span>
-              <span class="ml-1 font-extrabold text-emerald-300">${score}/${qs.length}</span>
-              <span class="text-slate-400 ml-2">(${pct}%)</span>
-              <span class="ml-2">${msg}</span>
-            </div>
-          `;
-        }
-      }, 0);
-    }
-
-    function formatTime(s) {
-      const m = Math.floor(Math.max(0,s) / 60);
-      const r = Math.max(0,s) % 60;
-      return `${String(m).padStart(2,"0")}:${String(r).padStart(2,"0")}`;
-    }
-
-    function escapeHtml(str) {
-      return String(str||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function render() {
-      if (state.step === "setup") renderSetup();
-      else renderDashboard();
-    }
+    state.timed.running=true;
+    state.timed.remaining=120;
+    state.timed.questions=qs;
+    state.timed.answers={};
 
     render();
-  </script>
+
+    runTimer();
+  }
+
+  function runTimer(){
+    if(timerHandle) clearInterval(timerHandle);
+    timerHandle=setInterval(()=>{
+      if(!state.timed.running){
+        clearInterval(timerHandle); timerHandle=null; return;
+      }
+      state.timed.remaining--;
+      const d = document.getElementById("timerDisplay");
+      if(d) d.textContent = formatTime(state.timed.remaining);
+      if(state.timed.remaining<=0) finishTimedQuiz();
+    },1000);
+  }
+
+  function recordTimedAnswer(qIndex,optIndex){
+    state.timed.answers[qIndex]=optIndex;
+  }
+
+  function finishTimedQuizEarly(){ finishTimedQuiz(); }
+
+  function finishTimedQuiz(){
+    const qs=state.timed.questions;
+    let score=0;
+    qs.forEach((qObj,idx)=>{
+      const ans=state.timed.answers[idx];
+      if(ans!==undefined && ans===qObj.correct) score++;
+    });
+
+    state.timed.running=false;
+    const pct=Math.round((score/qs.length)*100);
+    const msg = pct>=80 ? "Finals pace." : pct>=50 ? "Good speed." : "Slow down, learn first.";
+
+    render();
+
+    setTimeout(()=>{
+      const box = $("timedScoreBox");
+      if(box){
+        box.innerHTML = `
+          <div class="glass-soft p-3">
+            <span class="font-extrabold">Timed Score:</span>
+            <span class="ml-1 font-extrabold text-emerald-300">${score}/${qs.length}</span>
+            <span class="text-slate-400 ml-1">(${pct}%)</span>
+            <span class="ml-2">${msg}</span>
+          </div>
+        `;
+      }
+    },0);
+  }
+
+  function renderTimedRunning(){
+    const qs = state.timed.questions;
+    return `
+      <div class="mt-4">
+        <div class="glass-soft p-3 flex items-center justify-between">
+          <div class="text-sm font-extrabold">Time left</div>
+          <div id="timerDisplay" class="text-lg font-black text-emerald-300">${formatTime(state.timed.remaining)}</div>
+        </div>
+
+        <div class="mt-3 max-h-[320px] overflow-auto pr-1 space-y-2">
+          ${qs.map((qObj,idx)=>`
+            <div class="glass-soft p-3">
+              <div class="font-bold text-sm">${idx+1}. ${escapeHtml(qObj.q)}</div>
+              <div class="mt-2 space-y-1">
+                ${qObj.options.map((op,i)=>`
+                  <label class="flex items-center gap-2 text-sm">
+                    <input type="radio" name="timed_${idx}" value="${i}"
+                      onchange="recordTimedAnswer(${idx},${i})"
+                      ${state.timed.answers[idx]===i ? "checked" : ""}>
+                    <span>${escapeHtml(op)}</span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+
+        <button class="btn btn-ghost w-full mt-4" onclick="finishTimedQuizEarly()">
+          Finish & Score
+        </button>
+      </div>
+    `;
+  }
+
+  function formatTime(s){
+    const m=Math.floor(Math.max(0,s)/60);
+    const r=Math.max(0,s)%60;
+    return `${String(m).padStart(2,"0")}:${String(r).padStart(2,"0")}`;
+  }
+
+  /* ========= ACTIONS ========= */
+  function setGrade(g){ state.grade=g; state.activeTopicId=null; render(); }
+  function setRegion(r){ state.region=r; state.system=SYSTEMS[r].systems[0]; state.activeTopicId=null; render(); }
+  function setSystem(s){ state.system=s; state.activeTopicId=null; render(); }
+  function startApp(){ state.step="dashboard"; setBadge(); render(); }
+  function setSubject(s){ state.subject=s; state.activeTopicId=null; render(); }
+  function setMode(m){ state.mode=m; render(); }
+  function setTab(t){ state.tab=t; state.timed.running=false; render(); }
+  function updateSearch(v){ state.search=v; state.activeTopicId=null; render(); }
+  function openTopic(id){ state.activeTopicId=id; state.tab="CONTENT"; state.timed.running=false; render(); }
+  function resetFilters(){ state.subject="ALL"; state.search=""; state.activeTopicId=null; render(); }
+
+  function resetApp(){
+    state.step="setup";
+    state.grade=9;
+    state.region="INDIA";
+    state.system="CBSE";
+    state.subject="ALL";
+    state.mode="LEARNING";
+    state.search="";
+    state.activeTopicId=null;
+    state.tab="CONTENT";
+    state.timed.running=false;
+    $("badge").classList.add("hidden");
+    render();
+  }
+
+  /* ========= RENDER ROOT ========= */
+  function render(){
+    if(state.step==="setup") renderSetup();
+    else renderDashboard();
+  }
+
+  render();
+</script>
 </body>
 </html>
